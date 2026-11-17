@@ -1,0 +1,26 @@
+"""Settings come from environment variables (or a local .env). Nothing secret lives in the code."""
+import os
+from dataclasses import dataclass
+
+from dotenv import load_dotenv
+
+REQUIRED = ("HELPDESK_URL", "HELPDESK_KEY", "CANDIDATE_EMAIL")
+
+
+@dataclass(frozen=True)
+class Config:
+    helpdesk_url: str
+    helpdesk_key: str
+    candidate_email: str
+
+
+def load_config() -> Config:
+    load_dotenv()
+    missing = [name for name in REQUIRED if not os.environ.get(name)]
+    if missing:
+        raise SystemExit(f"Missing environment variables: {', '.join(missing)}. Copy .env.example to .env and fill it in.")
+    return Config(
+        helpdesk_url=os.environ["HELPDESK_URL"].rstrip("/"),
+        helpdesk_key=os.environ["HELPDESK_KEY"],
+        candidate_email=os.environ["CANDIDATE_EMAIL"],
+    )
