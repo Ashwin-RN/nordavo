@@ -3,8 +3,8 @@
 For each open ticket: mask -> rules -> model proposal -> code routing -> reply checks -> post -> log.
 
 Safe to re-run. The helpdesk's open list is the to-do list: a handled ticket is never fetched again.
-Exit code 0 means every ticket was handled; 1 means some are still open (run again); 2 means a
-request was rejected as malformed or unauthorised and the run stopped.
+Exit code 0 means every ticket was handled; 1 means some are still open or the helpdesk was
+unavailable (run again); 2 means a request was rejected as malformed or unauthorised and the run stopped.
 """
 import argparse
 import os
@@ -178,6 +178,9 @@ def main(argv=None):
         left = hd.status()["open_tickets"]
         print(f"done: {left} tickets still open")
         return 1 if left else 0
+    except Unavailable as e:                                # outage while listing: nothing lost
+        print(f"stopped: the helpdesk is unavailable ({e}). Nothing was lost; run again later.", file=sys.stderr)
+        return 1
     except HelpdeskError as e:
         print(f"stopped: the helpdesk rejected a request ({e}). Fix the cause and run again.", file=sys.stderr)
         return 2

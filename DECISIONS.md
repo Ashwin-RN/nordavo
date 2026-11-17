@@ -13,6 +13,19 @@ The README's "Decisions" and "What I would improve" sections are written from th
 | Claude Haiku 5.5 | Cheap enough to stay far under the €1 budget, good enough on the examples | A stronger model might score higher; the model is one setting to change |
 | Python | Simple, and the reviewer can read it | None worth noting |
 
+## Talking to the helpdesk
+
+The API reference says what each error means. These are the choices it leaves open.
+
+| Decision | Why | What it costs |
+|---|---|---|
+| Retry 503s up to 6 times, the wait doubling up to 8 seconds, with a little random jitter | Rides out a short outage without hanging | About 15 seconds per ticket in a long outage (a circuit breaker is the next step) |
+| At most 4 calls a second, under the limit of 5 | A margin means we almost never see a 429 | Slightly slower runs |
+| On a timeout, look the ticket up before sending again | A timeout means "maybe saved"; resending blind could cause a 409 | One extra call, only after a timeout |
+| The helpdesk's open list is the only record of what is done | A local list can drift: a crash between the helpdesk saving and our list updating would cause a resend | 3 calls to list the tickets each run |
+| Retries run out: leave the ticket open and carry on | Nothing is lost; the next run picks it up | Customers wait during an outage |
+| The log takes only named fields, each line written to disk at once | Ticket text cannot leak in by accident; a crash loses one line at most | A new field has to be added to the list on purpose |
+
 ## Assumptions (where the brief was unclear)
 
 | Assumption | Why |
