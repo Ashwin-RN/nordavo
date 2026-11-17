@@ -48,3 +48,6 @@ The API reference says what each error means. These are the choices it leaves op
 
 | Gap | Why it is left out | What I would do next |
 |---|---|---|
+| Keywords miss typos ("refnud") | The model reads meaning and catches them; fuzzy matching would flood humans with false alarms | Test typo tickets in the eval and measure |
+| Keywords can be dodged with invisible characters, look-alike letters or spaced-out words | Dodging them wins little: the agent cannot move money, and every reply must pass the FAQ checks | Strip invisible characters and map look-alike letters before matching |
+| A card number split by line breaks or dots is not masked | Rare in real tickets | Widen the separators the masking accepts |
