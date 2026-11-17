@@ -5,11 +5,17 @@ First match wins:
   2. model says spam, and no rule flag      -> close
   3. any rule flag (model or keyword) or payment details -> handoff
   4. no FAQ id, unknown FAQ id, or not fully covered     -> handoff
-  5. otherwise                             -> reply candidate (layer 4 checks it before it is sent)
+  5. model confidence below MIN_REPLY_CONFIDENCE          -> handoff
+  6. otherwise                             -> reply candidate (checks.py checks it before it is sent)
 """
+import os
 import re
 
 from agent.rules import PAYMENT_KINDS, priority_floor
+
+# Below this self-reported confidence a reply goes to a human instead. The model's confidence is a
+# weak signal on its own, so it is one gate among several, not the main one.
+MIN_REPLY_CONFIDENCE = float(os.environ.get("MIN_REPLY_CONFIDENCE", "0.7"))
 
 KNOWN_FAQ_IDS = None  # filled on first use from faq.md headings
 
@@ -67,6 +73,11 @@ def route(proposal, keyword_flags, payment_kinds):
         why = "the FAQ does not fully answer it" if not unknown else f"cited unknown FAQ ids {unknown}"
         return {**base, "action": "handoff", "route_reason": "not_covered",
                 "reason": f"{proposal.priority_reason} Handed to a human: {why}.",
+                "handoff_note": proposal.handoff_note}
+
+    if proposal.confidence < MIN_REPLY_CONFIDENCE:
+        return {**base, "action": "handoff", "route_reason": "unsure",
+                "reason": f"{proposal.priority_reason} Handed to a human: the agent was unsure of its answer.",
                 "handoff_note": proposal.handoff_note}
 
     return {**base, "action": "reply", "route_reason": "faq:" + ",".join(faq_ids), "faq_ids": faq_ids,

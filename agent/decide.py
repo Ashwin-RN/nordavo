@@ -28,7 +28,8 @@ Flag = Literal["refund", "cancellation", "gdpr", "security", "legal", "churn", "
 
 
 class Proposal(BaseModel):
-    language: Literal["nl", "en", "de"] = Field(description="Language the customer wrote in.")
+    language: Literal["nl", "en", "de"] = Field(
+        description="Language of the customer's own sentences. Quoted button texts or error messages do not count.")
     category: Literal["bug", "billing", "feature_request", "question", "other"]
     priority: Literal["P1", "P2", "P3", "P4"]
     priority_reason: str = Field(description="One English sentence: why this category and priority.")
@@ -63,7 +64,9 @@ other (spam, empty, anything else).
 
 ## Rule flags: set each that applies
 - refund: asks for money back, or disputes a charge or an invoice amount.
-- cancellation: wants to cancel, end or change the contract, plan or payment method.
+- cancellation: asks us to cancel, end or change their contract, plan or payment method. A how-to
+  question about something the customer does themselves in the app (e.g. "how do I upgrade?") is
+  not a contract change.
 - gdpr: a personal data request (access, deletion, correction; AVG in Dutch). A general question
   about where data is stored is not a request.
 - security: possible account compromise, unknown logins, data leaks.

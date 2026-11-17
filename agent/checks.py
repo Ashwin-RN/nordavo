@@ -52,30 +52,21 @@ def detect_language(text):
 
 # ---------------------------------------------------------------- labels, urls, numbers
 
-def _faq_labels():
-    labels = set()
-    for chain in re.findall(r"[^\n.,;:]*→[^\n.,;:]*", FAQ):
-        for seg in chain.split("→"):
-            seg = re.sub(r"[()\"]", " ", seg).strip()
-            words = seg.split()
-            for i in range(len(words)):          # every tail of the text before/after an arrow
-                labels.add(" ".join(words[i:]).lower())
-                labels.add(" ".join(words[: i + 1]).lower())
-    return labels
+def _arrow_words(text):
+    """The words directly before and after each arrow, ignoring bracketed glosses."""
+    text = re.sub(r"\([^)]*\)", " ", text)
+    pairs = re.findall(r"(\S+)\s*→\s*(?=(\S+))", text)  # lookahead: chains A → B → C overlap
+    return [re.sub(r"[\"“”'.,;:]", "", w) for pair in pairs for w in pair]
 
 
-_LABELS = _faq_labels()
+# Exact Dutch menu words as the FAQ writes them (Instellingen, Abonnement, Profiel, Taal ...).
+_FAQ_MENU_WORDS = {w.lower() for w in _arrow_words(FAQ)}
 _FAQ_LOWER = FAQ.lower()
 
 
 def bad_labels(draft):
-    """Menu names next to an arrow, or quoted, that the FAQ does not contain."""
-    problems = []
-    for before, after in re.findall(r"(\S+)\s*→\s*(\S+)", draft):
-        for word in (before, after):
-            w = re.sub(r"[()\"“”'.,;:]", "", word).lower()
-            if w and not any(lbl.startswith(w) or lbl.endswith(w) for lbl in _LABELS):
-                problems.append(word)
+    """Menu names next to an arrow, or quoted, that the FAQ does not contain exactly."""
+    problems = [w for w in _arrow_words(draft) if w and w.lower() not in _FAQ_MENU_WORDS]
     for quoted in re.findall(r"[\"“'‘]([^\"”'’]{2,40})[\"”'’]", draft):
         if len(quoted.split()) <= 5 and quoted.lower() not in _FAQ_LOWER:
             problems.append(quoted)
