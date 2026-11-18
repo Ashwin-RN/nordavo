@@ -40,7 +40,8 @@ HARD_RULES = {
     ],
     "security": [
         r"gehackt?", r"\bhacked", r"datalek", r"data ?breach", r"phishing", r"onbevoegd(?! om\b)", r"unauthori[sz]ed",
-        r"waren (wij|we) niet\b(?! eens)", r"dat was ik niet", r"wasn'?t us", r"niet door ons", r"vreemde login",
+        # "that wasn't us": the clause ends after "niet", so "in augustus waren wij niet open" does not match
+        r"waren (wij|we) niet\s*([.?!,;:]|$)", r"dat was ik niet", r"wasn'?t us", r"niet door ons", r"vreemde login",
         r"suspicious login", r"account .{0,20}overgenomen",
     ],
     "legal": [  # a lawyer mentioned at all goes to a human (safety first)

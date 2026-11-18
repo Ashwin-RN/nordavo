@@ -68,6 +68,10 @@ def test_dates_kept_when_no_card():  # invented
     ("Er is ingelogd door onbevoegden.", "security"),
     ("There is an unauthorized charge on our card.", "security"),
     ("Die inlogpogingen waren wij niet.", "security"),
+    ("Dat waren wij niet, iemand anders logde in.", "security"),       # clause ends at the comma
+    ("Die bestellingen waren we niet!", "security"),
+    ("Die logins? Dat waren wij niet\nGroet, Sanne", "security"),     # "niet" at the end of a line
+    ("Dat waren wij niet", "security"),                                 # "niet" at the end of the text
     ("Als dit niet wordt opgelost, dan zeggen wij op\nGroet, Sanne", "cancellation"),  # "op" at the end of a line
 ])
 def test_hard_rule_found(text, rule):
@@ -93,7 +97,9 @@ def test_no_false_alarm_on_faq_questions(text):
     "Jullie team is erg deskundig, bedankt!",                          # deskundig is not kündigen (cancellation)
     "Ik zie: je bent nu ingelogd. Wat moet ik daarna doen?",           # an app message, not addressing an AI
     "De uren waren wij niet eens met de manager overeengekomen.",      # a disagreement, not "that wasn't us" (security)
-    "Dat zeggen we op de vergadering.",                                # "zeggen we op" mid-sentence (cancellation, churn)
+    "In augustus waren wij niet open.",                                # closed in August, not "that wasn't us" (security)
+    "Waren wij niet al klant bij jullie?",                             # a question about us (security)
+    "Dat zeggen we op de vergadering.",                              # "zeggen we op" mid-sentence (cancellation, churn)
     "Ik krijg een systeembericht met een foutmelding bij het opslaan.",  # an app notice (injection)
     "Hebben jullie ook een AI-assistent die roosters maakt?",          # a feature question (injection)
     "Hoeveel concurrent users mag ik hebben op Plus?",                 # English "concurrent" (churn)
