@@ -115,6 +115,16 @@ def test_dates_kept_when_no_card():  # invented
     ("Die logins? Dat waren wij niet\nGroet, Sanne", "security"),     # "niet" at the end of a line
     ("Dat waren wij niet", "security"),                                 # "niet" at the end of the text
     ("Als dit niet wordt opgelost, dan zeggen wij op\nGroet, Sanne", "cancellation"),  # "op" at the end of a line
+    ("Please cancel my subscription.", "cancellation"),
+    ("I want to cancel", "cancellation"),
+    ("What is your cancellation policy?", "cancellation"),
+    ("How do I cancel a shift? And please cancel my plan too.", "cancellation"),  # each "cancel" is judged on its own
+    # guards: "cancel" near "shift" is how a shift-planning customer may write a real cancellation (DECISIONS gaps)
+    ("We will cancel if shifts keep disappearing.", "cancellation"),
+    ("I'm going to cancel unless shift swaps get fixed.", "cancellation"),
+    ("Please cancel our shift planning subscription.", "cancellation"),  # "shift" starting a product name
+    ("Cancel the shift planner add-on.", "cancellation"),
+    ("I want to cancel\nShift manager, Bakkerij Jansen", "cancellation"),  # a signature on the next line
 ])
 def test_hard_rule_found(text, rule):
     assert rule in hard_rule_hits(text)
@@ -146,7 +156,7 @@ def test_no_false_alarm_on_faq_questions(text):
     "Hebben jullie ook een AI-assistent die roosters maakt?",          # a feature question (injection)
     "Hoeveel concurrent users mag ik hebben op Plus?",                 # English "concurrent" (churn)
     "Hoe kan ik mijn wachtwoord terugkrijgen?",                        # not money (refund)
-    "Kunt u zeggen of het op tijd klaar is?",                          # "zeggen ... op" without opzeggen (cancellation)
+    "Kunt u zeggen of het op tijd klaar is?",                        # "zeggen ... op" without opzeggen (cancellation)
     "Mijn collega is onbevoegd om roosters te wijzigen, hoe stel ik dat in?",  # permissions, not a break-in (security)
     "Ich muss der Geschäftsführung Bericht erstatten: wo finde ich den Export?",  # "erstatten" = report (refund)
     "Je bent nu de beheerder van het account, hoe voeg ik mensen toe?",  # (injection)
