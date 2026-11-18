@@ -107,6 +107,16 @@ def run_checks(monkeypatch, verdict, plan):
     return passed, results, judge_message
 
 
+def test_a_dutch_draft_labelled_english_is_held_before_any_model_call(monkeypatch):
+    # route.py lets an English draft be its own English version; a wrong "en" label must not slip a Dutch draft past
+    client = FakeClient(create=[], parse=[])          # nothing queued: any model call would fail the test
+    monkeypatch.setattr(decide, "_client", client)
+    draft = PLAN_DRAFT["draft_reply"]                 # Dutch
+    decision = {"language": "en", "faq_ids": ["F04"], "draft_reply": draft, "draft_english": draft}
+    passed, results, usages = checks.check_reply(decision, "How do I swap a shift?", "Basis")
+    assert not passed and results["language"] and client.requests == [] and usages == []
+
+
 def test_judge_sees_the_plan(monkeypatch):
     passed, _, message = run_checks(monkeypatch, judge(True), "Basis")
     assert passed and "<customer_plan>\nBasis\n</customer_plan>" in message

@@ -6,8 +6,10 @@ First match wins:
   3. any rule flag (model or keyword) or payment details -> handoff
   4. written in a language we don't reply in ("other")  -> handoff, posted as "en", the note names it
   5. no FAQ id, unknown FAQ id, or not fully covered     -> handoff
-  6. model confidence below MIN_REPLY_CONFIDENCE          -> handoff
-  7. otherwise                            -> reply candidate (checks.py checks it before it is sent)
+  6. a Dutch or German draft with no English version (nothing for the judge to compare) -> handoff;
+     an English draft is its own English version
+  7. model confidence below MIN_REPLY_CONFIDENCE          -> handoff
+  8. otherwise                           -> reply candidate (checks.py checks it before it is sent)
 """
 from agent.config import setting
 from agent.decide import FAQ_IDS
@@ -74,6 +76,16 @@ def route(proposal, code_flags):
                 "reason": f"{proposal.priority_reason} Handed to a human: {why}.",
                 "handoff_note": note}
 
+    # The judge compares the draft with its English version. An English draft is its own English version;
+    # a Dutch or German draft without one cannot be compared, so a human checks it.
+    english = proposal.draft_english if proposal.draft_english.strip() else (
+        proposal.draft_reply if proposal.language == "en" else "")
+    if not english:
+        return {**base, "action": "handoff", "route_reason": "no_english",
+                "reason": f"{proposal.priority_reason} Handed to a human: the draft has no English version to "
+                          f"check it against.",
+                "handoff_note": note}
+
     if proposal.confidence < MIN_REPLY_CONFIDENCE:
         return {**base, "action": "handoff", "route_reason": "unsure",
                 "reason": f"{proposal.priority_reason} Handed to a human: the agent was unsure of its answer.",
@@ -81,7 +93,7 @@ def route(proposal, code_flags):
 
     return {**base, "action": "reply", "route_reason": "faq:" + ",".join(faq_ids), "faq_ids": faq_ids,
             "reason": f"{proposal.priority_reason} Answered from FAQ {', '.join(faq_ids)}.",
-            "draft_reply": proposal.draft_reply, "draft_english": proposal.draft_english,
+            "draft_reply": proposal.draft_reply, "draft_english": english,
             "handoff_note": note}
 
 

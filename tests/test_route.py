@@ -39,6 +39,20 @@ def test_not_fully_covered_is_handed_off():
     assert route.route(proposal(fully_covered=False), set())["route_reason"] == "not_covered"
 
 
+def test_a_draft_without_an_english_version_is_handed_off():  # the judge compares the two; nothing to compare
+    for empty in ("", "  \n"):
+        d = route.route(proposal(draft_english=empty), set())
+        assert d["action"] == "handoff" and d["route_reason"] == "no_english" and d["handoff_note"]
+
+
+def test_an_english_draft_is_its_own_english_version():  # no second copy needed, and no needless handoff
+    draft = "Hi, go to Team → Medewerker toevoegen (Add employee). Team Roosterly"
+    for empty in ("", "  \n"):
+        d = route.route(proposal(language="en", draft_reply=draft, draft_english=empty), set())
+        assert d["action"] == "reply" and d["draft_english"] == draft
+    assert route.route(CLEAN, set())["draft_english"] == CLEAN.draft_english  # a given English version is kept
+
+
 def test_low_confidence_is_handed_off():
     d = route.route(proposal(confidence=route.MIN_REPLY_CONFIDENCE - 0.01), set())  # follows the setting
     assert d["action"] == "handoff" and d["route_reason"] == "unsure"
