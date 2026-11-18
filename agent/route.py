@@ -44,7 +44,8 @@ def route(proposal, code_flags):
     priority = priority_floor(proposal.priority, flags)
     other = proposal.language == "other"            # the API takes only nl, en, de: post "en", name it in the note
     language_name = proposal.other_language.strip() or "a language we do not reply in"
-    note = (f"Customer wrote in {language_name}; we reply only in nl, en, de.\n" if other else "") + proposal.handoff_note
+    model_note = proposal.handoff_note.strip() or "The agent wrote no note: please read the ticket."  # never empty
+    note = (f"Customer wrote in {language_name}; we reply only in nl, en, de.\n" if other else "") + model_note
     base = {"language": "en" if other else proposal.language, "category": proposal.category, "priority": priority,
             "confidence": round(max(0.0, min(1.0, proposal.confidence)), 2), "flags": sorted(flags)}
 
@@ -68,17 +69,17 @@ def route(proposal, code_flags):
         why = "the FAQ does not fully answer it" if not unknown else f"cited unknown FAQ ids {unknown}"
         return {**base, "action": "handoff", "route_reason": "not_covered",
                 "reason": f"{proposal.priority_reason} Handed to a human: {why}.",
-                "handoff_note": proposal.handoff_note}
+                "handoff_note": note}
 
     if proposal.confidence < MIN_REPLY_CONFIDENCE:
         return {**base, "action": "handoff", "route_reason": "unsure",
                 "reason": f"{proposal.priority_reason} Handed to a human: the agent was unsure of its answer.",
-                "handoff_note": proposal.handoff_note}
+                "handoff_note": note}
 
     return {**base, "action": "reply", "route_reason": "faq:" + ",".join(faq_ids), "faq_ids": faq_ids,
             "reason": f"{proposal.priority_reason} Answered from FAQ {', '.join(faq_ids)}.",
             "draft_reply": proposal.draft_reply, "draft_english": proposal.draft_english,
-            "handoff_note": proposal.handoff_note}
+            "handoff_note": note}
 
 
 def rule_text(flags):
