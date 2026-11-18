@@ -75,7 +75,14 @@ def test_injection_cannot_raise_priority():  # T030 asks for P1
     assert priority_floor("P4", {"injection"}) == "P4"
 
 
-def test_empty_ticket():  # T012
-    assert is_empty({"subject": "Re:", "body": ""})
-    assert is_empty({"subject": "Re:", "body": "  \n -- "})
-    assert not is_empty({"subject": "x", "body": "Al nieuws?"})
+@pytest.mark.parametrize("subject, body, empty", [
+    ("Re:", "", True),                      # T012
+    ("Re:", "  \n -- ", True),              # invented
+    ("RE: FW:", "", True),                  # invented: prefixes repeat
+    ("AW: WG:", None, True),                # invented: German prefixes, body missing
+    ("", "Al nieuws?", False),              # invented
+    ("Wachtwoord vergeten", "", False),     # invented: the question is in the subject
+    ("Re: Factuur oktober", "", False),     # invented: a prefix, then content
+])
+def test_empty_ticket(subject, body, empty):
+    assert is_empty({"subject": subject, "body": body}) == empty

@@ -79,9 +79,13 @@ def priority_floor(priority, flags):
     return priority
 
 
+_REPLY_PREFIX = re.compile(r"^\s*(?:(?:re|fwd?|antw|doorst|aw|wg)\s*:\s*)+", re.IGNORECASE)  # Re: FW: AW: ...
+
+
 def is_empty(ticket):
-    """Nothing to answer: no body, or only whitespace and punctuation."""
-    return not re.search(r"\w", ticket.get("body") or "")
+    """Nothing to answer: no letter or digit in the subject (reply prefixes removed) or the body."""
+    subject = _REPLY_PREFIX.sub("", ticket.get("subject") or "")
+    return not re.search(r"\w", f"{subject} {ticket.get('body') or ''}")
 
 
 # ---------------------------------------------------------------- masking

@@ -58,6 +58,7 @@ The API reference says what each error means. These are the choices it leaves op
 | A customer sending card details (T008) goes to a human, details masked | Asking us to change payment method is a contract change |
 | "How do I upgrade?" (T023) is answered from the FAQ | A how-to about self-service is not a request for us to change the contract |
 | GDPR requests are at least P2, not P1 | Nordavo's own example E09 labels one P2 |
+| A ticket is empty only when neither the subject (after reply prefixes such as "Re:", "Antw:", "AW:") nor the body has a letter or digit | Close is the one action no human sees again; a question written only in the subject must not be buried |
 | An empty ticket is closed with language "nl" | The API requires a language; most customers write Dutch |
 | A reply needs the model's confidence at 0.7 or more | The brief leaves "unsure" open; this is one gate among several, and a setting |
 
