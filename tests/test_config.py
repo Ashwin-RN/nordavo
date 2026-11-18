@@ -16,11 +16,13 @@ def env(monkeypatch):
     return monkeypatch
 
 
-def test_missing_anthropic_key_is_one_clear_line(env):
+def test_missing_anthropic_key_is_one_clear_line(env, capsys):
     env.delenv("ANTHROPIC_API_KEY")
     with pytest.raises(SystemExit) as stop:
         config.load_config()
-    assert "ANTHROPIC_API_KEY" in str(stop.value) and "\n" not in str(stop.value)
+    assert stop.value.code == 2                    # a setup problem: fix the cause, don't just run again
+    message = capsys.readouterr().err
+    assert "ANTHROPIC_API_KEY" in message and message.count("\n") == 1
 
 
 def test_all_set_loads(env):

@@ -3,6 +3,7 @@
 Importing this module loads .env once; a variable already set in the environment wins over .env.
 """
 import os
+import sys
 from dataclasses import dataclass
 
 from dotenv import load_dotenv
@@ -27,7 +28,9 @@ def setting(name, default):
 def load_config() -> Config:
     missing = [name for name in REQUIRED if not os.environ.get(name)]
     if missing:
-        raise SystemExit(f"Missing environment variables: {', '.join(missing)}. Copy .env.example to .env and fill it in.")
+        print(f"Missing environment variables: {', '.join(missing)}. Copy .env.example to .env and fill it in.",
+              file=sys.stderr)
+        raise SystemExit(2)  # exit 2: fix the cause first (exit 1 would mean "run again later")
     return Config(
         helpdesk_url=os.environ["HELPDESK_URL"].rstrip("/"),
         helpdesk_key=os.environ["HELPDESK_KEY"],
