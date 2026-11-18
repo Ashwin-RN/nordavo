@@ -89,7 +89,10 @@ _URL = re.compile(r"\b(?:https?://)?[\w-]+(?:\.[\w-]+)*\.(?:nl|com|eu|io|de)(?:/
 
 
 def bad_urls(draft):
-    return [u for u in _URL.findall(draft) if u.lower().rstrip("/.") not in _FAQ_LOWER]
+    """Web addresses the FAQ does not contain. The FAQ writes them bare (app.roosterly.nl/login), so http:// or
+    https:// in front is ignored: the address itself must still be one the FAQ gives."""
+    return [u for u in _URL.findall(draft)
+            if re.sub(r"^https?://", "", u.lower()).rstrip("/.") not in _FAQ_LOWER]
 
 
 def _numbers(text):
