@@ -8,10 +8,13 @@ unavailable (run again); 2 means the helpdesk or the model API rejected our setu
 model, malformed request) and the run stopped.
 """
 import argparse
+import hashlib
+import json
 import os
 import sys
 import time
 
+from agent import checks, decide
 from agent.checks import check_reply, detect_language, failed_names
 from agent.config import load_config
 from agent.decide import ModelFailed, ModelSetupError, check_setup, propose
@@ -24,6 +27,16 @@ LOCK = ".run.lock"
 MODEL_FAILURE_LIMIT = 3   # model failures in a row before the run stops (the model is down, not one ticket)
 
 
+def prompt_version():
+    """8 characters that change whenever anything sent to the model changes: the three prompts (the triage
+    prompt holds the FAQ), the two output forms, the model names and the effort settings."""
+    parts = [decide.SYSTEM, checks.BACK_TRANSLATE_SYSTEM, checks.JUDGE_SYSTEM,
+             json.dumps(decide.Proposal.model_json_schema(), sort_keys=True),
+             json.dumps(checks.Verdict.model_json_schema(), sort_keys=True),
+             decide.MODEL, decide.CHECK_MODEL, decide.EFFORT, checks.BACK_TRANSLATE_EFFORT, checks.JUDGE_EFFORT]
+    return hashlib.sha256("\0".join(parts).encode("utf-8")).hexdigest()[:8]
+
+
 def decide_ticket(ticket):
     """Everything up to the post. Returns (decision, log fields). Raises ModelFailed."""
     if is_empty(ticket):
@@ -34,18 +47,18 @@ def decide_ticket(ticket):
     text = f"{subject}\n{body}"
     proposal, usage = propose(ticket, subject, body)
     d = route(proposal, flags)
-    calls, checks = [usage], None
+    calls, results = [usage], None
 
     if d["action"] == "reply":
-        passed, checks, usages = check_reply(d, text, ticket.get("customer_plan") or "unknown")
+        passed, results, usages = check_reply(d, text, ticket.get("customer_plan") or "unknown")
         calls += usages
         if not passed:
-            failed = failed_names(checks)
+            failed = failed_names(results)
             d = {**d, "action": "handoff", "route_reason": "checks_failed:" + ",".join(failed),
                  "reason": d["reason"].replace("Answered from FAQ", "Draft from FAQ")
                  + f" The draft failed automatic checks ({', '.join(failed)}), so a human reviews it.",
                  "handoff_note": f"Automatic reply held back: failed checks {', '.join(failed)}.\n{d['handoff_note']}"}
-    return d, {"model_calls": calls, "checks": checks}
+    return d, {"model_calls": calls, "checks": results}
 
 
 def fallback_decision(ticket, error):
@@ -158,13 +171,13 @@ def main(argv=None):
     take_lock()
 
     hd = Helpdesk(cfg)
-    log = RunLog()
+    log = RunLog(prompt_version=prompt_version())          # stamped on every line
     try:
         status = hd.status()
         print(f"mode={status['mode']} open={status['open_tickets']} handled={status['handled_tickets']} "
               f"log={log.path}{' DRY RUN' if args.dry_run else ''}")
         check_setup()                                       # before any ticket is fetched or touched
-        print("model setup ok")
+        print(f"model setup ok (prompt_version={log.fixed['prompt_version']})")
 
         tickets = [hd.get_ticket(args.ticket)] if args.ticket else list(hd.open_tickets())
         # a dry run may re-check a handled ticket (to see its draft again); a live run never touches one

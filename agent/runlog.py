@@ -12,18 +12,23 @@ from pathlib import Path
 ALLOWED = {
     "ticket_id", "action", "outcome", "language", "category", "priority", "confidence",
     "rule_flags", "faq_ids", "checks", "route_reason", "model_calls", "cost_usd",
-    "latency_s", "http", "error", "dry_run",
+    "latency_s", "http", "error", "dry_run", "prompt_version",
 }
 
 
 class RunLog:
-    def __init__(self, directory="logs"):
+    def __init__(self, directory="logs", **fixed):
+        """fixed: fields stamped on every line of this run, e.g. prompt_version."""
+        if set(fixed) - ALLOWED:  # checked here, before any ticket is touched
+            raise ValueError(f"refusing to log fields {sorted(set(fixed) - ALLOWED)}")
         Path(directory).mkdir(exist_ok=True)
         stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         self.path = Path(directory) / f"run-{stamp}.jsonl"
+        self.fixed = fixed
         self._f = open(self.path, "a", encoding="utf-8")
 
     def write(self, **fields):
+        fields = {**self.fixed, **fields}
         unknown = set(fields) - ALLOWED
         if unknown:
             raise ValueError(f"refusing to log fields {sorted(unknown)}")

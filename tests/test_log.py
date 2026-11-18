@@ -32,3 +32,33 @@ def test_no_draft_checked_logs_null(monkeypatch, tmp_path):
     runner(monkeypatch, tmp_path, FakeClient(create=["ok"], parse=[parsed(spam)]), [TICKET])
     run.main([])
     assert log_lines(tmp_path)[0]["checks"] is None
+
+
+def test_every_line_carries_the_prompt_version(monkeypatch, tmp_path):
+    runner(monkeypatch, tmp_path, FakeClient(create=["ok"], parse=[parsed(CARD_DRAFT)]), [TICKET])
+    run.main([])
+    (line,) = log_lines(tmp_path)
+    assert line["prompt_version"] == run.prompt_version() and len(line["prompt_version"]) == 8
+
+
+def test_prompt_version_changes_with_anything_sent_to_the_model(monkeypatch):
+    from agent import checks
+    before = run.prompt_version()
+    for module, name in [(checks, "JUDGE_SYSTEM"), (checks, "BACK_TRANSLATE_SYSTEM"), (decide, "SYSTEM"),
+                         (decide, "MODEL"), (decide, "CHECK_MODEL"), (decide, "EFFORT"),
+                         (checks, "BACK_TRANSLATE_EFFORT"), (checks, "JUDGE_EFFORT")]:
+        with monkeypatch.context() as m:
+            m.setattr(module, name, getattr(module, name) + " changed")
+            assert run.prompt_version() != before, name
+    assert run.prompt_version() == before  # and back again once the change is undone
+    for module, name, other in [(decide, "Proposal", "Verdict"), (checks, "Verdict", "Proposal")]:  # the two forms
+        with monkeypatch.context() as m:
+            m.setattr(module, name, getattr(checks if other == "Verdict" else decide, other))
+            assert run.prompt_version() != before, name
+
+
+def test_an_unknown_fixed_field_stops_before_any_line(tmp_path):
+    import pytest
+    from agent.runlog import RunLog
+    with pytest.raises(ValueError):
+        RunLog(tmp_path, ticket_text="never")
