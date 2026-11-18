@@ -12,7 +12,7 @@ import os
 import sys
 import time
 
-from agent.checks import check_reply, detect_language
+from agent.checks import check_reply, detect_language, failed_names
 from agent.config import load_config
 from agent.decide import ModelFailed, ModelSetupError, check_setup, propose
 from agent.helpdesk import AlreadyHandled, Helpdesk, HelpdeskError, Unavailable
@@ -41,7 +41,7 @@ def decide_ticket(ticket):
         passed, checks, usages = check_reply(d, text)
         calls += usages
         if not passed:
-            failed = [name for name, problems in checks.items() if problems]
+            failed = failed_names(checks)
             d = {**d, "action": "handoff", "route_reason": "checks_failed:" + ",".join(failed),
                  "reason": d["reason"].replace("Answered from FAQ", "Draft from FAQ")
                  + f" The draft failed automatic checks ({', '.join(failed)}), so a human reviews it.",
@@ -93,7 +93,8 @@ def handle(hd, log, ticket, dry_run, decision=None, extra=None, verbose=False):
         ticket_id=ticket["id"], action=decision["action"], outcome=outcome,
         language=decision["language"], category=decision["category"], priority=decision["priority"],
         confidence=decision.get("confidence"), rule_flags=decision.get("flags", []),
-        faq_ids=decision.get("faq_ids", []), route_reason=decision["route_reason"], checks=extra.get("checks"),
+        faq_ids=decision.get("faq_ids", []), route_reason=decision["route_reason"],
+        checks=failed_names(extra.get("checks")),  # names only: the problems can quote the draft
         model_calls=calls, cost_usd=round(sum(c["cost_usd"] for c in calls), 6),
         latency_s=round(time.monotonic() - started, 2), http=hd.http_log, error=error, dry_run=dry_run,
     )

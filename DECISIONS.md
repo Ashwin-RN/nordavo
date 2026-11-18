@@ -26,6 +26,7 @@ The API reference says what each error means. These are the choices it leaves op
 | The helpdesk's open list is the only record of what is done | A local list can drift: a crash between the helpdesk saving and our list updating would cause a resend | 3 calls to list the tickets each run |
 | Retries run out: leave the ticket open and carry on | Nothing is lost; the next run picks it up | Customers wait during an outage |
 | The log takes only named fields, each line written to disk at once | Ticket text cannot leak in by accident; a crash loses one line at most | A new field has to be added to the list on purpose |
+| The log names the reply checks that failed, never what they found (`[]` = passed, `null` = no draft checked) | What a check found can quote the draft: a card number in a draft would be logged as digit groups | To see why a check failed, re-run the ticket with `--show` |
 
 ## Triage and routing
 

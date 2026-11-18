@@ -186,8 +186,14 @@ def model_checks(draft, draft_english, faq_ids, ticket_text):
     return ([f"{name}" for name in failed] + v.problems) if failed else [], usages
 
 
+def failed_names(results):
+    """The names of the checks that failed, e.g. ["numbers", "payment"]: the only part that goes in the log.
+    None means no draft was checked. The problems themselves can quote the draft, so they go to --show only."""
+    return None if results is None else sorted(name for name, problems in results.items() if problems)
+
+
 def check_reply(decision, ticket_text, run_model_checks=True):
-    """Return (passed, results, usages). results is safe to log: check names and short problem notes."""
+    """Return (passed, results, usages). results holds each check's problems: for the screen, never the log."""
     results = code_checks(decision["draft_reply"], decision["language"], ticket_text)
     usages = []
     if not any(results.values()) and run_model_checks:
