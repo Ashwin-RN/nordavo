@@ -1,0 +1,1142 @@
+{
+ "date": "2026-11-18T19:19:04+00:00",
+ "git": "8b89f7a",
+ "dirty": false,
+ "prompt_version": "5f2ce683",
+ "check_model": "claude-haiku-5-5",
+ "runs": 3,
+ "variants_sha256": "59fb22d91cc1",
+ "summary": {
+  "planted": 48,
+  "reached_customer": 0,
+  "stopped_by_code": 0,
+  "judged": 48,
+  "held_by_judge": 48,
+  "shown_in_back": 48,
+  "judge_names": {
+   "supported_by_faq": 42,
+   "answers_the_question": 10,
+   "no_promises_beyond_faq": 14,
+   "matches_reading_aid": 48
+  },
+  "controls": 12,
+  "control_false_alarms": 0,
+  "control_pattern_hits": 0,
+  "errors": 0
+ },
+ "cost_usd": 0.020479,
+ "rows": [
+  {
+   "id": "E02-control",
+   "example": "E02",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Dear, you can change your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E02-negation",
+   "example": "E02",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, you cannot change your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the customer cannot change the VAT number themselves, while the drafting English says they can; the two versions contradict each other.",
+    "Independent translation is worded as a negative statement that contradicts the FAQ, which says the VAT number can be changed under Instellingen → Bedrijfsgegevens."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E02-time",
+   "example": "E02",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, you can adjust your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on earlier invoices. With kind regards, Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the new VAT number will also be used on earlier invoices, but FAQ F06 says the VAT number change applies only to future invoices.",
+    "Translation promises the new number on earlier invoices, which the FAQ does not offer.",
+    "Translation and drafting assistant's English differ: translation claims earlier invoices are updated, drafting version says future invoices only."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E02-actor",
+   "example": "E02",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear,\n\nOur customer service will update your new VAT number under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "The translation says customer service will update the VAT number, but the FAQ says the customer changes it themselves under Instellingen → Bedrijfsgegevens. This action is not in the FAQ.",
+    "The translation promises that customer service will act on the request, which the FAQ does not offer.",
+    "The translation and the drafting assistant's English disagree: one says customer service will update the number, the other says the customer can change it themselves.",
+    "The translation omits the instruction that the customer can make the change themselves, so it does not match the FAQ or the drafting version."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E02-place",
+   "example": "E02",
+   "kind": "place",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, you can change your new VAT number yourself under Instellingen → Abonnement. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Independent translation points to Instellingen → Abonnement, but FAQ F06 says company details (VAT number) are changed under Instellingen → Bedrijfsgegevens, not Abonnement",
+    "Drafting assistant English correctly names Settings → Company details, but the translation and the draft disagree on the menu path, so the reply's location claim is not consistently matched",
+    "Independent translation says new number used on future invoices; the FAQ supports this for future invoices, so this part is fine"
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E04-control",
+   "example": "E04",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. After that, your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E04-negation",
+   "example": "E04",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function cannot accept the swap then. Afterwards your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says a colleague with the same function cannot accept the swap, which contradicts FAQ F03 (colleagues with the same role can accept). The drafting assistant's English says they can, so the two versions do not match.",
+    "The translation's claim that a colleague cannot accept the swap is not supported by the FAQ."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E04-wrong_fact",
+   "example": "E04",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with a different function can then accept the swap. After that, your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says a colleague with a different function can accept the swap, but the FAQ says colleagues with the same role can accept it.",
+    "The drafting assistant's English says the same role, so the two versions do not match.",
+    "The claim about who can accept the swap is not supported by the FAQ as written in the translation."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E04-actor",
+   "example": "E04",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. After that, your colleague approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says a colleague approves the swap under Rooster → Verzoeken, but the FAQ says the manager approves it.",
+    "The drafting assistant's English says the manager approves the swap, so the translation and drafting version do not match."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E04-place",
+   "example": "E04",
+   "kind": "place",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. After that, your manager approves the swap under Instellingen → Bedrijfsgegevens. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says the manager approves the swap under Instellingen → Bedrijfsgegevens, but the FAQ says approval is under Rooster → Verzoeken (Rota → Requests). The drafting assistant's English gives the correct path, so the two versions do not match.",
+    "The approval location in the translation is not supported by the FAQ entry."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E07-control",
+   "example": "E07",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that amounts to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E07-negation",
+   "example": "E07",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You cannot upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the customer cannot upgrade via Instellingen → Abonnement, but FAQ F05 says upgrades are possible at any time there.",
+    "Independent translation and drafting assistant English disagree on whether upgrading is possible via Settings → Subscription."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E07-wrong_fact",
+   "example": "E07",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per location per month, so for 25 employees that amounts to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says Plus costs EUR 6 per location per month, but FAQ F05 says EUR 6 per active employee per month.",
+    "Independent translation says 'per location' while the drafting assistant's English says 'per active employee', so the two versions do not match.",
+    "The EUR 150 total for 25 employees depends on the per-employee basis, so it is only correct under the per-active-employee pricing in the FAQ."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E07-time",
+   "example": "E07",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Settings → Subscription; the new price applies from the previous invoice. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says the new price applies from the previous invoice, but FAQ F05 says from the next invoice.",
+    "The drafting assistant's English says 'next invoice', so the two English versions differ on this point.",
+    "The 'previous invoice' timing claim is not supported by the FAQ."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E07-number",
+   "example": "E07",
+   "kind": "number",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €175 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation states €175 per month for 25 employees, but 25 × €6 = €150, so the figure is not supported by the FAQ arithmetic.",
+    "The translation (€175) and the drafting assistant's English (€150) give different totals, so they do not say the same thing."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E10-control",
+   "example": "E10",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hi, current outages and planned maintenance can be found at status.roosterly.nl. There you can see right away whether anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E10-negation",
+   "example": "E10",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current outages and scheduled maintenance can be found at status.roosterly.nl. There you cannot see whether anything is scheduled for this evening.\n\nTeam Roosterly",
+   "judge_notes": [
+    "Translation says the status page cannot show whether maintenance is scheduled this evening, while the drafting English says it can be seen right away; the two versions contradict each other.",
+    "The FAQ only says status.roosterly.nl shows current outages and planned maintenance; it does not say the page shows tonight's schedule specifically, so the drafting version's claim is unsupported.",
+    "The reply does not clearly answer whether maintenance is planned tonight; the independent translation says it cannot be determined from the page."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E10-wrong_fact",
+   "example": "E10",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current outages and scheduled maintenance can be found at status.roosterly.nl. There you can see right away that nothing is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "The independent translation states that nothing is scheduled for tonight, which the FAQ does not say. The FAQ only points to status.roosterly.nl.",
+    "The reply does not answer whether maintenance is planned tonight. It only refers the customer to the status page.",
+    "The translation says nothing is scheduled for tonight, but the drafting version says the customer can see whether anything is planned tonight. The two versions do not match.",
+    "The translation's claim that nothing is scheduled for tonight is a status claim the FAQ does not support."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E10-time",
+   "example": "E10",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, earlier outages and scheduled maintenance can be found at status.roosterly.nl. There you can see right away whether anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "The independent translation says 'earlier outages' while the drafting assistant's English says 'current outages'. The FAQ says 'current outages', so the translation is the one that differs."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E10-actor",
+   "example": "E10",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current outages and planned maintenance can be found at status.roosterly.nl. We'll email you right away if anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "Independent translation claims Roosterly will email the customer right away if maintenance is scheduled tonight; FAQ F11 does not offer email notifications.",
+    "Drafting assistant version does not claim email notification, so the two versions differ on this point.",
+    "Reply does not clearly confirm whether maintenance is planned tonight; it only points to the status page, which the FAQ supports but does not directly answer the question for tonight."
+   ],
+   "error": null,
+   "run": 1
+  },
+  {
+   "id": "E02-control",
+   "example": "E02",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Dear, you can change your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E02-negation",
+   "example": "E02",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, you cannot change your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Translation says the customer cannot change the VAT number themselves, which contradicts F06 (Instellingen → Bedrijfsgegevens allows changing the VAT number for future invoices).",
+    "Translation and drafting assistant English disagree: translation says 'cannot change' while the drafting version says 'can change'."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E02-time",
+   "example": "E02",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, you can change your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on earlier invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Independent translation claims the new VAT number will be used on earlier invoices; FAQ says changes apply to future invoices only, so this is unsupported and contradicts the FAQ.",
+    "Drafting assistant English correctly says future invoices, but the independent translation says earlier invoices, so the two versions do not match.",
+    "Customer asked for the new VAT number to be put on their invoices; reply only explains self-service steps and does not confirm the outcome for the customer's invoices.",
+    "Translation is addressed to 'Dear' without a customer name and the drafting version says 'Hello'; minor tone mismatch."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E02-actor",
+   "example": "E02",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, Our customer service updates your new VAT number under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "The independent translation says customer service updates the VAT number, but the drafting English says the customer changes it themselves under Settings → Company details. The two versions do not match.",
+    "The translation's claim that customer service will update the VAT number is not offered in the FAQ, which only describes the customer changing it under Bedrijfsgegevens."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E02-place",
+   "example": "E02",
+   "kind": "place",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, you can change your new VAT number yourself under Instellingen → Abonnement. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the VAT number is changed under Instellingen → Abonnement, but FAQ F06 says Instellingen → Bedrijfsgegevens (Company details).",
+    "Drafting assistant English points to Settings → Company details, which matches FAQ, but the two versions disagree on the location, so they do not match each other.",
+    "Translation's path (Settings → Subscription) is not stated in the FAQ for VAT number changes."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E04-control",
+   "example": "E04",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. After that, your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E04-negation",
+   "example": "E04",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function cannot then accept the swap. After that, your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says a colleague with the same function cannot accept the swap, but FAQ F03 says colleagues with the same role can accept it. The drafting assistant's English says they can.",
+    "The independent translation and the drafting assistant's English disagree on whether a same-role colleague can accept the swap."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E04-wrong_fact",
+   "example": "E04",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with a different function can then accept the swap. After that, your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says a colleague with a different function can accept the swap, but FAQ and drafting English say same role.",
+    "Independent translation omits that manager approval is required; drafting English is consistent with FAQ on that point, so the mismatch is in the role wording."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E04-actor",
+   "example": "E04",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. Afterwards, your colleague approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says the colleague approves the swap, but the FAQ says the manager approves it under Rooster → Verzoeken.",
+    "The drafting assistant's English says the manager approves, so the two versions do not match on who approves the swap.",
+    "The claim that a colleague approves the swap is not supported by the FAQ entry."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E04-place",
+   "example": "E04",
+   "kind": "place",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. After that, your manager approves the swap under Instellingen → Bedrijfsgegevens. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says the manager approves the swap under Instellingen → Bedrijfsgegevens, which the FAQ does not state. The FAQ says Rooster → Verzoeken (Rota → Requests).",
+    "The independent translation and the drafting assistant's English disagree on where the manager approves the swap. The drafting version matches the FAQ."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E07-control",
+   "example": "E07",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E07-negation",
+   "example": "E07",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You cannot upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says 'You cannot upgrade via Instellingen → Abonnement', which contradicts FAQ F05 (upgrade is possible at any time there).",
+    "Translation and drafting assistant's English version differ on whether upgrading is possible; the drafting version ('You can upgrade') matches the FAQ."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E07-wrong_fact",
+   "example": "E07",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per location per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says Plus costs EUR 6 per location per month, but the FAQ says EUR 6 per active employee per month; the drafting assistant's English says per active employee, so the two versions differ.",
+    "The EUR 150 total is correct only under the per-active-employee pricing in the FAQ, so the translation's per-location wording would give a wrong basis for the figure."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E07-time",
+   "example": "E07",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the previous invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the new price applies from the previous invoice, but the FAQ says the next invoice and the drafting version says next invoice.",
+    "Independent translation keeps the Dutch menu labels (Instellingen → Abonnement) while the drafting version uses English (Settings → Subscription)."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E07-number",
+   "example": "E07",
+   "kind": "number",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €175 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Translation states 25 employees at €6 costs €175 per month, but 25 × €6 = €150 per the FAQ price and arithmetic.",
+    "The independent translation (€175) and the drafting assistant's English (€150) give different totals.",
+    "The reply's main figure is wrong, so it does not correctly answer the customer's price question."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E10-control",
+   "example": "E10",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hi, current outages and planned maintenance can be found at status.roosterly.nl. There you can see right away whether anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E10-negation",
+   "example": "E10",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current outages and planned maintenance can be found at status.roosterly.nl. There you can't see whether anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "The independent translation says the status page cannot show whether anything is scheduled for tonight, while the drafting assistant's English says it can. The two versions contradict each other.",
+    "The FAQ says the status page lists current outages and planned maintenance. It does not say the page shows tonight's maintenance, so the drafting version's claim is not supported.",
+    "The reply does not directly answer whether maintenance is planned tonight. It only points to the status page.",
+    "The drafting version promises that tonight's planned maintenance is visible on the status page, which goes beyond what the FAQ offers."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E10-wrong_fact",
+   "example": "E10",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current outages and scheduled maintenance can be found at status.roosterly.nl. There you can see right away that nothing is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "Translation claims nothing is scheduled for tonight, which the FAQ does not state; FAQ only points to status.roosterly.nl",
+    "Translation does not answer whether maintenance is planned tonight; it asserts a result instead of directing to the status page",
+    "Translation and drafting English differ: one says nothing is scheduled tonight, the other says the customer can see whether anything is planned"
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E10-time",
+   "example": "E10",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, earlier outages and planned maintenance can be found at status.roosterly.nl. There you can immediately see whether anything is scheduled for this evening.\n\nTeam Roosterly",
+   "judge_notes": [
+    "The independent translation says 'earlier outages' but the drafting assistant's English and the FAQ say 'current outages', so the two versions do not match."
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E10-actor",
+   "example": "E10",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current disruptions and scheduled maintenance can be found at status.roosterly.nl. We will email you right away if anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "Independent translation promises an email alert for tonight's maintenance, which the FAQ does not offer",
+    "Independent translation and drafting English differ: the translation adds the email promise that the drafting version omits"
+   ],
+   "error": null,
+   "run": 2
+  },
+  {
+   "id": "E02-control",
+   "example": "E02",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Dear, you can change your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E02-negation",
+   "example": "E02",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, you cannot change your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Translation says the customer cannot change the VAT number themselves, but the FAQ says Instellingen → Bedrijfsgegevens allows it.",
+    "Translation and drafting assistant English contradict each other: 'cannot change' versus 'can change'.",
+    "Translation's core claim is not supported by the FAQ, so the reply does not correctly answer the customer's request."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E02-time",
+   "example": "E02",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear,\n\nYou can change your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on previous invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the new VAT number will be used on previous invoices; FAQ only says changes apply to future invoices, so this claim is unsupported and promises beyond the FAQ.",
+    "Translation and drafting English disagree on whether the new number applies to previous or future invoices.",
+    "Drafting English correctly limits the change to future invoices, but the reply does not mention that old invoices are unchanged, which the customer may need to know."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E02-actor",
+   "example": "E02",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear,\n\nOur customer service updates your new VAT number under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Independent translation says customer service updates the VAT number, but the FAQ only says the customer changes it under Settings → Company details.",
+    "Translation promises an action by customer service that the FAQ does not offer.",
+    "Drafting assistant's English says the customer can change the VAT number themselves, which contradicts the translation.",
+    "Translation and drafting English do not say the same thing about who makes the change."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E02-place",
+   "example": "E02",
+   "kind": "place",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Dear, you can change your new VAT number yourself under Instellingen → Abonnement. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the VAT number is changed under Instellingen → Abonnement, but FAQ F06 says Instellingen → Bedrijfsgegevens (Company details).",
+    "Drafting assistant English correctly points to Company details, but it does not match the independent translation's navigation path.",
+    "Translation and drafting version disagree on where the VAT number is changed, so the reply's claim about the location is not reliably supported."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E04-control",
+   "example": "E04",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. Afterwards, your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E04-negation",
+   "example": "E04",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function cannot accept the swap then. Afterwards your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "The independent translation says a colleague with the same function cannot accept the swap, but the FAQ says colleagues with the same role can accept it.",
+    "The independent translation and the drafting assistant's English version disagree on whether a colleague can accept the swap."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E04-wrong_fact",
+   "example": "E04",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with a different function can then accept the swap. After that, your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says a colleague with a 'different function' can accept the swap, but the FAQ and drafting English say same role.",
+    "Translation omits that manager approval is on by default and can be turned off, which is not necessarily a problem but differs in scope; the main mismatch is the role wording."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E04-actor",
+   "example": "E04",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. Afterwards, your colleague approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_notes": [
+    "The translation says the colleague approves the swap, but the FAQ says the manager approves it under Rooster → Verzoeken.",
+    "The independent translation and the drafting assistant's English version disagree on who approves the swap (colleague vs. manager)."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E04-place",
+   "example": "E04",
+   "kind": "place",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. Afterwards your manager approves the swap under Instellingen → Bedrijfsgegevens. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says manager approves under Instellingen → Bedrijfsgegevens, which is not in the FAQ; FAQ says Rooster → Verzoeken (Rota → Requests).",
+    "Translation and drafting English disagree on where the manager approves the swap.",
+    "Translation's approval location claim is not supported by the FAQ entries."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E07-control",
+   "example": "E07",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E07-negation",
+   "example": "E07",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You cannot upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the customer cannot upgrade via Instellingen → Abonnement, but FAQ F05 says upgrades are possible at any time there.",
+    "Independent translation and drafting assistant's English differ on whether upgrading is possible (cannot vs can)."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E07-wrong_fact",
+   "example": "E07",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per location per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says Plus costs EUR 6 per location per month, but FAQ F05 says EUR 6 per active employee per month. The drafting assistant's English correctly says per active employee.",
+    "Translation and drafting assistant's English differ on the price basis, so they do not say the same thing."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E07-time",
+   "example": "E07",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the previous invoice. Team Roosterly",
+   "judge_notes": [
+    "Independent translation says the new price applies from the previous invoice, but the FAQ says the next invoice.",
+    "Translation and drafting assistant's English differ on invoice timing; the drafting version matches the FAQ.",
+    "The 'previous invoice' billing timing claim in the translation is not supported by the FAQ."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E07-number",
+   "example": "E07",
+   "kind": "number",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €175 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_notes": [
+    "Translation states €175 for 25 employees, but 25 x €6 = €150, so the price is an arithmetic error and not supported by the FAQ.",
+    "The independent translation (€175) and the drafting assistant's English (€150) give different totals."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E10-control",
+   "example": "E10",
+   "kind": "control",
+   "code_failed": [],
+   "judge_failed": [],
+   "shown_in_back": null,
+   "control_pattern_hits": [],
+   "back_translation": "Hi, current outages and scheduled maintenance can be found at status.roosterly.nl. There you can see right away whether anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E10-negation",
+   "example": "E10",
+   "kind": "negation",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current outages and planned maintenance can be found at status.roosterly.nl. There you cannot see whether anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "Independent translation says the status page cannot show whether anything is scheduled tonight; drafting English says it can. The two versions contradict each other.",
+    "Claim that the status page shows whether maintenance is planned for tonight goes beyond FAQ F11, which only says the page lists current outages and planned maintenance, without specifying a time window.",
+    "Reply does not directly answer whether maintenance is planned tonight; it only points to the status page."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E10-wrong_fact",
+   "example": "E10",
+   "kind": "wrong_fact",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current outages and scheduled maintenance can be found at status.roosterly.nl. There you can see right away that nothing is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "Translation claims nothing is scheduled for tonight, which the FAQ does not state. The FAQ only points to status.roosterly.nl.",
+    "Translation and drafting English differ: the translation says nothing is scheduled tonight, while the drafting version says the customer can see whether anything is planned."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E10-time",
+   "example": "E10",
+   "kind": "time",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, previous outages and scheduled maintenance can be found at status.roosterly.nl. There you can see right away whether anything is scheduled for this evening.\n\nTeam Roosterly",
+   "judge_notes": [
+    "The independent translation says 'previous outages', but the FAQ refers to current outages and planned maintenance.",
+    "The independent translation says 'previous outages' while the drafting assistant's English says 'current outages', so the two versions do not match."
+   ],
+   "error": null,
+   "run": 3
+  },
+  {
+   "id": "E10-actor",
+   "example": "E10",
+   "kind": "actor",
+   "code_failed": [],
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "no_promises_beyond_faq",
+    "matches_reading_aid"
+   ],
+   "shown_in_back": true,
+   "control_pattern_hits": null,
+   "back_translation": "Hi, current outages and scheduled maintenance can be found at status.roosterly.nl. We'll email you right away if anything is scheduled for tonight.\n\nTeam Roosterly",
+   "judge_notes": [
+    "Independent translation claims an email will be sent right away if maintenance is scheduled tonight; FAQ F11 only points to status.roosterly.nl and says nothing about email notifications.",
+    "Translation and drafting English differ: one says customers will be emailed, the other says the status page shows whether anything is planned tonight.",
+    "Reply does not clearly confirm whether maintenance is planned tonight; it only refers to the status page, which the FAQ supports but does not answer the question directly for this customer."
+   ],
+   "error": null,
+   "run": 3
+  }
+ ]
+}
