@@ -151,13 +151,14 @@ def _faq_entries(ids):
 
 
 def model_checks(draft, draft_english, faq_ids, ticket_text):
-    """Back-translate with a call that sees only the draft, then judge. Returns (problems, usages)."""
+    """Back-translate with a call that sees only the draft, then judge. Returns (problems, usages).
+    An API error raises ModelFailed or ModelSetupError (see decide._call), like the triage call."""
     client = decide._get_client()
     usages = []
 
     started = time.monotonic()
-    bt = client.messages.create(
-        model=decide.CHECK_MODEL, max_tokens=2000, system=BACK_TRANSLATE_SYSTEM,
+    bt = decide._call(
+        client.messages.create, model=decide.CHECK_MODEL, max_tokens=2000, system=BACK_TRANSLATE_SYSTEM,
         output_config={"effort": "low"},
         messages=[{"role": "user", "content": f"<text>\n{draft}\n</text>"}],
     )
@@ -167,8 +168,8 @@ def model_checks(draft, draft_english, faq_ids, ticket_text):
         return [f"back-translation failed (stop_reason={bt.stop_reason})"], usages
 
     started = time.monotonic()
-    jr = client.messages.parse(
-        model=decide.CHECK_MODEL, max_tokens=3000, system=JUDGE_SYSTEM,
+    jr = decide._call(
+        client.messages.parse, model=decide.CHECK_MODEL, max_tokens=3000, system=JUDGE_SYSTEM,
         output_config={"effort": "medium"},
         messages=[{"role": "user", "content": (
             f"<ticket>\n{ticket_text}\n</ticket>\n<faq_entries>\n{_faq_entries(faq_ids)}\n</faq_entries>\n"

@@ -10,7 +10,7 @@ from typing import List, Literal
 
 import anthropic
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 load_dotenv()
 
@@ -112,8 +112,15 @@ def _ticket_message(ticket, masked_subject, masked_body):
 
 
 class ModelFailed(Exception):
-    """The model call did not give a usable proposal. The ticket stays open."""
+    """The model call did not give a usable answer, for this ticket only. The ticket stays open."""
 
+
+class ModelSetupError(Exception):
+    """The model API rejected our setup (key, permission, model name, request). The run stops.
+    Not a ModelFailed: a bad key must never turn into fallback handoffs."""
+
+
+SETUP_STATUSES = {400, 401, 403, 404}
 
 _client = None
 
@@ -121,8 +128,22 @@ _client = None
 def _get_client():
     global _client
     if _client is None:
-        _client = anthropic.Anthropic(max_retries=3)
+        _client = anthropic.Anthropic(max_retries=3, timeout=40.0)  # per attempt; the SDK default is 10 minutes
     return _client
+
+
+def _call(method, **kwargs):
+    """Make one model call, sorting its errors: our setup is wrong, or this call failed."""
+    try:
+        return method(**kwargs)
+    except anthropic.APIStatusError as e:
+        if e.status_code in SETUP_STATUSES:
+            raise ModelSetupError(f"{e.status_code} {type(e).__name__}: {e.message}") from e
+        raise ModelFailed(f"api error: {type(e).__name__}") from e
+    except anthropic.APIError as e:              # timeouts and connection errors
+        raise ModelFailed(f"api error: {type(e).__name__}") from e
+    except ValidationError as e:                 # parse() got JSON that does not fit the form
+        raise ModelFailed("model output did not fit the form") from e
 
 
 def call_usage(model, usage, started):
@@ -133,19 +154,17 @@ def call_usage(model, usage, started):
 
 
 def propose(ticket, masked_subject, masked_body):
-    """Return (Proposal, usage dict). Raises ModelFailed."""
+    """Return (Proposal, usage dict). Raises ModelFailed or ModelSetupError."""
     started = time.monotonic()
-    try:
-        response = _get_client().messages.parse(
-            model=MODEL,
-            max_tokens=4000,
-            system=SYSTEM,
-            output_config={"effort": EFFORT},
-            messages=[{"role": "user", "content": _ticket_message(ticket, masked_subject, masked_body)}],
-            output_format=Proposal,
-        )
-    except anthropic.APIError as e:
-        raise ModelFailed(f"api error: {type(e).__name__}") from e
+    response = _call(
+        _get_client().messages.parse,
+        model=MODEL,
+        max_tokens=4000,
+        system=SYSTEM,
+        output_config={"effort": EFFORT},
+        messages=[{"role": "user", "content": _ticket_message(ticket, masked_subject, masked_body)}],
+        output_format=Proposal,
+    )
     usage = call_usage(MODEL, response.usage, started)
     if response.stop_reason != "end_turn" or response.parsed_output is None:
         raise ModelFailed(f"stop_reason={response.stop_reason}")

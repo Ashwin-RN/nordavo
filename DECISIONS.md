@@ -34,6 +34,8 @@ The API reference says what each error means. These are the choices it leaves op
 | Routing order, first match wins: spam with no flags → close; any flag → handoff; not fully covered or unknown FAQ id → handoff; confidence under 0.7 → handoff; otherwise reply | Close is the one action no human sees again, so it has the strictest bar | Some answerable tickets go to a human |
 | Confidence is one gate, never the only one | It is a number the model writes about itself, not a measured probability | None; the other gates check facts |
 | Code writes the final reason | Code can override the model's action, so the reason must match what code chose | Reasons read a little templated |
+| Model errors are sorted in one place: 400, 401, 403 and 404 mean our setup is wrong and stop the run (exit 2); anything else, including output that does not fit the form, is a model failure for that ticket | A bad key must stop the run, not turn into 30 fallback handoffs; rate limits and overloads are brief | A 400 tied to one ticket (e.g. far too long) would stop every run at that ticket |
+| Each model call waits at most 40 seconds, and the SDK retries it 3 times | The slowest call seen is 8.6 s; the SDK's default wait is 10 minutes | A hung model costs about 2.7 minutes per ticket before it counts as failed |
 | Model fails: retry once after the other tickets, then code writes a handoff | Failures are usually brief. A reply is unsafe without a proposal, and a close would bury the ticket. | The fallback is posted at P3 today, losing security floors (on the fix list) |
 | One batch per command, as the brief asks | Tickets sit in a helpdesk queue | In production: run it every minute (safe to repeat), or use a webhook if the helpdesk offers one |
 

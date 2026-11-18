@@ -4,7 +4,8 @@ For each open ticket: mask -> rules -> model proposal -> code routing -> reply c
 
 Safe to re-run. The helpdesk's open list is the to-do list: a handled ticket is never fetched again.
 Exit code 0 means every ticket was handled; 1 means some are still open or the helpdesk was
-unavailable (run again); 2 means a request was rejected as malformed or unauthorised and the run stopped.
+unavailable (run again); 2 means the helpdesk or the model API rejected our setup (bad key, unknown
+model, malformed request) and the run stopped.
 """
 import argparse
 import os
@@ -13,7 +14,7 @@ import time
 
 from agent.checks import check_reply, detect_language
 from agent.config import load_config
-from agent.decide import ModelFailed, propose
+from agent.decide import ModelFailed, ModelSetupError, propose
 from agent.helpdesk import AlreadyHandled, Helpdesk, HelpdeskError, Unavailable
 from agent.route import empty_decision, route
 from agent.rules import hard_rule_hits, is_empty, mask
@@ -183,6 +184,10 @@ def main(argv=None):
         return 1
     except HelpdeskError as e:
         print(f"stopped: the helpdesk rejected a request ({e}). Fix the cause and run again.", file=sys.stderr)
+        return 2
+    except ModelSetupError as e:                            # bad key, no permission, unknown model
+        print(f"stopped: the model API rejected our setup ({e}). Check ANTHROPIC_API_KEY and the model "
+              f"settings, then run again.", file=sys.stderr)
         return 2
     finally:
         log.close()
