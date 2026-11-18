@@ -15,40 +15,50 @@ import unicodedata
 # Matched against lower-cased text with accents removed (beëindigen -> beeindigen).
 # Keywords cover Dutch, English and German. The model's flags are the main check;
 # these catch what the model misses.
+# Each keyword is a stem. Where a stem also matched ordinary Dutch, that one reading is excluded
+# ("klagen" is not "Klage"), so a stem never needs extra words to count: missing a refund costs more
+# than a false alarm. tests/test_rules.py pins both sides with invented sentences.
 HARD_RULES = {
     "refund": [
-        r"terugbetal", r"terugstort", r"terugkrijgen", r"geld terug", r"restitutie", r"creditnota",
+        r"terugbetal", r"terugstort", r"(?<!wachtwoord )terugkrijgen", r"geld terug", r"restitutie", r"creditnota",
         r"dubbel afgeschreven", r"twee keer .{0,20}afgeschreven", r"\brefund", r"charged twice",
-        r"double charge", r"money back", r"ruckerstatt", r"erstatt", r"doppelt abgebucht",
+        r"double charge", r"money back", r"ruckerstatt", r"(?<!bericht )erstatt", r"doppelt abgebucht",
     ],
     "cancellation": [
-        r"opzeg", r"zeggen .{0,10}op\b", r"beeindig", r"\bcancel", r"terminate", r"kundig",
+        # "opzeggen" splits in a sentence ("wij zeggen ons abonnement op."): the "op" must end the clause,
+        # so "kunt u zeggen of het contract op tijd klaar is" does not match
+        r"opzeg", r"opgezegd", r"\bzeg(gen)? (we|wij|ik) op\s*([.?!,]|$)",
+        r"\bzeg(t|gen)?\b[^.?!\n]{0,40}\b(abonnement|contract|lidmaatschap)\b[^.?!\n]{0,25}\bop\s*([.?!,]|$)",
+        r"beeindig", r"\bcancel", r"terminate", r"\b(ge)?kundig",
         r"betaalmethode", r"payment method", r"zahlungsmethode", r"downgrade",
     ],
     "gdpr": [
-        r"\bavg\b", r"\bgdpr\b", r"\bdsgvo\b", r"persoonsgegevens", r"inzageverzoek", r"inzage in",
+        r"\bavg\b", r"\bgdpr\b", r"\bdsgvo\b", r"persoonsgegevens", r"inzageverzoek",
+        r"inzage in(?! (het|de|hun) (rooster|planning|uren|diensten))",
         r"gegevens .{0,30}verwijder", r"verwijder .{0,30}gegevens", r"personal data", r"delete my data",
         r"right to be forgotten", r"personenbezogene daten",
     ],
     "security": [
-        r"gehackt?", r"\bhacked", r"datalek", r"data ?breach", r"phishing", r"onbevoegd", r"unauthori[sz]ed",
-        r"waren wij niet", r"wasn'?t us", r"niet door ons", r"vreemde login", r"suspicious login",
-        r"account .{0,20}overgenomen",
+        r"gehackt?", r"\bhacked", r"datalek", r"data ?breach", r"phishing", r"onbevoegd(?! om\b)", r"unauthori[sz]ed",
+        r"waren (wij|we) niet\b(?! eens)", r"dat was ik niet", r"wasn'?t us", r"niet door ons", r"vreemde login",
+        r"suspicious login", r"account .{0,20}overgenomen",
     ],
-    "legal": [
+    "legal": [  # a lawyer mentioned at all goes to a human (safety first)
         r"advocaat", r"jurist", r"rechtszaak", r"juridische stappen", r"schadevergoeding", r"aansprakelijk",
-        r"\blawyer", r"attorney", r"legal action", r"\bsue\b", r"lawsuit", r"anwalt", r"klage", r"schadenersatz",
+        r"\blawyer", r"attorney", r"legal action", r"\bsue\b", r"lawsuit", r"anwalt", r"\bklage(?!n\b)",
+        r"verklag", r"aanklag", r"schadenersatz",
     ],
     "churn": [
-        r"zeggen we op", r"overstappen", r"concurrent", r"andere aanbieder", r"we('re| are)? (leaving|switching)",
-        r"switch to another", r"wechseln zu",
+        r"zeggen (we|wij) op\s*([.?!,]|$)", r"overstappen(?! naar (plus|basis)\b)", r"concurrent(?! (users?|gebruikers|sessions?)\b)",
+        r"andere aanbieder", r"we('re| are)? (leaving|switching)", r"switch to another", r"wechseln zu",
     ],
     # Text addressed to an AI, or trying to change our instructions. Treated as a possible
     # security incident: handed off, and never allowed to set the priority.
     "injection": [
         r"negeer .{0,30}instructies", r"ignore .{0,30}instructions", r"ignoriere .{0,30}anweisungen",
-        r"systeembericht", r"system ?message", r"system prompt", r"voor de ai", r"for the ai",
-        r"ai[- ]assistent", r"ai assistant", r"you are now", r"je bent nu",
+        r"(?<!een )(?<!het )systeembericht", r"(?<!a )(?<!the )system ?message", r"system prompt",
+        r"(voor|for|to) (de|the) ai\b", r"\b(beste|hallo|hoi|dear|hi|hello|hey) ai\b", r"(?<!een )(?<!an )ai[- ]assist",
+        r"(you are|you're) now(?! (logged|signed)\b)", r"je bent nu(?! (ingelogd|uitgelogd|de beheerder)\b)",
     ],
 }
 
@@ -57,7 +67,7 @@ HARD_RULES = {
 FLOORS = {"security": "P1", "legal": "P1",
           "refund": "P2", "cancellation": "P2", "gdpr": "P2", "churn": "P2", "payment_details": "P2"}
 
-_COMPILED = {rule: [re.compile(p) for p in pats] for rule, pats in HARD_RULES.items()}
+_COMPILED = {rule: [re.compile(p, re.MULTILINE) for p in pats] for rule, pats in HARD_RULES.items()}
 
 
 def _normalise(text):

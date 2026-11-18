@@ -24,6 +24,12 @@ def test_spam_with_a_flag_is_handed_off_not_closed():
     assert d["action"] == "handoff" and d["route_reason"] == "rule:legal"
 
 
+def test_unsure_spam_is_handed_off_not_closed():  # close is the one action no human sees again
+    d = route.route(proposal(is_spam=True, confidence=route.MIN_REPLY_CONFIDENCE - 0.01), set())
+    assert d["action"] == "handoff" and d["route_reason"] == "unsure_spam" and d["handoff_note"]
+    assert route.route(proposal(is_spam=True, confidence=route.MIN_REPLY_CONFIDENCE), set())["action"] == "close"
+
+
 def test_unknown_faq_id_is_handed_off():
     d = route.route(proposal(faq_ids=["F99"]), set())
     assert d["action"] == "handoff" and "F99" in d["reason"]

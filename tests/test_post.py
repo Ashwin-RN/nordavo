@@ -21,6 +21,7 @@ P = Proposal(language="nl", category="question", priority="P4", priority_reason=
 SHAPES = {
     "reply": route(P, set()),
     "rule handoff": route(P, {"refund"}),
+    "unsure spam": route(P.model_copy(update={"is_spam": True, "confidence": 0.3, "handoff_note": ""}), set()),
     "other language": route(P.model_copy(update={"language": "other", "other_language": "French"}), set()),
     "not covered": route(P.model_copy(update={"fully_covered": False}), set()),
     "not covered, empty note": route(P.model_copy(update={"fully_covered": False, "handoff_note": ""}), set()),

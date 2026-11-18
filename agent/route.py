@@ -2,7 +2,7 @@
 
 First match wins:
   1. empty ticket                          -> close   (decided by code, no model call)
-  2. model says spam, and no rule flag      -> close
+  2. model says spam, and no rule flag      -> close if confidence >= MIN_REPLY_CONFIDENCE, else handoff
   3. any rule flag (model or keyword) or payment details -> handoff
   4. written in a language we don't reply in ("other")  -> handoff, posted as "en", the note names it
   5. no FAQ id, unknown FAQ id, or not fully covered     -> handoff
@@ -50,8 +50,11 @@ def route(proposal, code_flags):
             "confidence": round(max(0.0, min(1.0, proposal.confidence)), 2), "flags": sorted(flags)}
 
     if proposal.is_spam and not flags:
-        return {**base, "action": "close", "route_reason": "spam",
-                "reason": f"{proposal.priority_reason} Spam or unrelated to Roosterly: closed."}
+        if proposal.confidence >= MIN_REPLY_CONFIDENCE:  # close is never seen again: it needs the reply's bar
+            return {**base, "action": "close", "route_reason": "spam",
+                    "reason": f"{proposal.priority_reason} Spam or unrelated to Roosterly: closed."}
+        return {**base, "action": "handoff", "route_reason": "unsure_spam", "handoff_note": note,
+                "reason": f"{proposal.priority_reason} Looks like spam, but the agent was unsure: a human checks it."}
 
     if flags:
         return {**base, "action": "handoff", "route_reason": "rule:" + ",".join(sorted(flags)),
