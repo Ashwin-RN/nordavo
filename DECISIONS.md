@@ -26,6 +26,17 @@ The API reference says what each error means. These are the choices it leaves op
 | Retries run out: leave the ticket open and carry on | Nothing is lost; the next run picks it up | Customers wait during an outage |
 | The log takes only named fields, each line written to disk at once | Ticket text cannot leak in by accident; a crash loses one line at most | A new field has to be added to the list on purpose |
 
+## Triage and routing
+
+| Decision | Why | What it costs |
+|---|---|---|
+| The model returns a fixed form, never free text | Code can check every field; a broken form counts as a model failure | Each new field means a schema change |
+| Routing order, first match wins: spam with no flags → close; any flag → handoff; not fully covered or unknown FAQ id → handoff; confidence under 0.7 → handoff; otherwise reply | Close is the one action no human sees again, so it has the strictest bar | Some answerable tickets go to a human |
+| Confidence is one gate, never the only one | It is a number the model writes about itself, not a measured probability | None; the other gates check facts |
+| Code writes the final reason | Code can override the model's action, so the reason must match what code chose | Reasons read a little templated |
+| Model fails: retry once after the other tickets, then code writes a handoff | Failures are usually brief. A reply is unsafe without a proposal, and a close would bury the ticket. | The fallback is posted at P3 today, losing security floors (on the fix list) |
+| One batch per command, as the brief asks | Tickets sit in a helpdesk queue | In production: run it every minute (safe to repeat), or use a webhook if the helpdesk offers one |
+
 ## Assumptions (where the brief was unclear)
 
 | Assumption | Why |
