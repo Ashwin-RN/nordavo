@@ -37,6 +37,15 @@ The API reference says what each error means. These are the choices it leaves op
 | Model fails: retry once after the other tickets, then code writes a handoff | Failures are usually brief. A reply is unsafe without a proposal, and a close would bury the ticket. | The fallback is posted at P3 today, losing security floors (on the fix list) |
 | One batch per command, as the brief asks | Tickets sit in a helpdesk queue | In production: run it every minute (safe to repeat), or use a webhook if the helpdesk offers one |
 
+## The runner
+
+| Decision | Why | What it costs |
+|---|---|---|
+| One run at a time, enforced by a lock file holding the run's process number; a lock whose process is dead is taken over | Two runs at once could answer the same ticket twice. Asking the operating system whether the process is alive needs no timer, so a slow but healthy run never loses its lock. | Works on one machine only; several machines need a shared lock with an expiry and a heartbeat |
+| `--dry-run` posts nothing; `--show` prints drafts to the screen, never the log | Drafts can contain names, and the logs are committed | None |
+| Exit codes: 0 done, 1 run again, 2 fix the cause first | A scheduler or a person can tell "try later" from "something is wrong" | None |
+| Tickets one at a time, not in parallel | 30 tickets take 2 to 3 minutes; running in order keeps crash recovery and the log simple | Slower on a large backlog (see gaps) |
+
 ## Assumptions (where the brief was unclear)
 
 | Assumption | Why |
@@ -62,5 +71,8 @@ The API reference says what each error means. These are the choices it leaves op
 | Keywords miss typos ("refnud") | The model reads meaning and catches them; fuzzy matching would flood humans with false alarms | Test typo tickets in the eval and measure |
 | Keywords can be dodged with invisible characters, look-alike letters or spaced-out words | Dodging them wins little: the agent cannot move money, and every reply must pass the FAQ checks | Strip invisible characters and map look-alike letters before matching |
 | A card number split by line breaks or dots is not masked | Rare in real tickets | Widen the separators the masking accepts |
+| A crash between a successful post and its log line leaves the log one line short | The customer is unaffected: the helpdesk saved the answer and the ticket is off the open list | A start-up reconcile: record any handled ticket missing from the log |
+| No parallel workers | Not needed for 30 tickets; the model's 4 to 8 seconds per ticket is the slow part | One fetcher handing each ticket to exactly one worker, with one shared pace limit under the helpdesk's 5 calls a second |
+| No unit tests for the runner | It is mostly glue, proven end to end by the crash test and dry runs | Tests with a fake helpdesk and a fake model |
 | The same model writes the reply and checks it | Keeps one vendor and one setting; the check model is already a separate setting (`CHECK_MODEL`) | Measure how often the judge agrees with Nordavo's labels; try a stronger model for the judge only (Sonnet costs about 20x Haiku, still about 12 cents per 100 tickets for judging) |
 | Back-translation uses the same model family as the drafter | Costs a hundredth of a cent per reply; a second vendor adds a key, a failure mode and another place customer text goes | Back-translate with a different engine (e.g. DeepL) for independence, log how often it disagrees with the drafter's English, and turn disagreements into eval cases |
