@@ -52,7 +52,7 @@ def test_cut_off_json_is_a_model_failure(monkeypatch):
 def test_check_call_error_is_a_model_failure(monkeypatch, error):
     use(monkeypatch, FakeClient(create=[error]))  # the back-translation call fails
     with pytest.raises(decide.ModelFailed):
-        checks.check_reply(DECISION, f"{TICKET['subject']}\n{TICKET['body']}")
+        checks.check_reply(DECISION, f"{TICKET['subject']}\n{TICKET['body']}", "Basis")
 
 
 # ---- the runner: the start-up call and a setup error mid-run

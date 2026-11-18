@@ -26,6 +26,12 @@ def parsed(proposal):
     return SimpleNamespace(stop_reason="end_turn", parsed_output=proposal, usage=usage)
 
 
+def text_reply(text):
+    """A successful messages.create response with this text."""
+    usage = SimpleNamespace(input_tokens=1, output_tokens=1)
+    return SimpleNamespace(stop_reason="end_turn", content=[SimpleNamespace(type="text", text=text)], usage=usage)
+
+
 class FakeClient:
     """Stands in for anthropic.Anthropic. Each call to messages.parse or messages.create takes
     the next item from its queue: an exception is raised, a callable is called, anything else is returned."""
@@ -34,9 +40,11 @@ class FakeClient:
         self.messages = self
         self._queues = {"parse": list(parse), "create": list(create)}
         self.calls = []
+        self.requests = []  # the full keyword arguments of each call, for tests that read the prompt
 
     def _next(self, kind, kwargs):
         self.calls.append((kind, kwargs.get("model")))
+        self.requests.append(kwargs)
         assert self._queues[kind], f"unexpected model call: {kind}"
         item = self._queues[kind].pop(0)
         if isinstance(item, BaseException):

@@ -37,7 +37,7 @@ def decide_ticket(ticket):
     calls, checks = [usage], None
 
     if d["action"] == "reply":
-        passed, checks, usages = check_reply(d, text)
+        passed, checks, usages = check_reply(d, text, ticket.get("customer_plan") or "unknown")
         calls += usages
         if not passed:
             failed = failed_names(checks)

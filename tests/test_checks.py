@@ -1,7 +1,10 @@
 """Code checks on reply drafts. Drafts are from a trial run on the examples (E-ids) or invented (marked)."""
 import pytest
 
+from agent import checks, decide, run
 from agent.checks import code_checks
+from tests.fakes import FakeClient, parsed, text_reply
+from tests.test_model_errors import TICKET, runner
 
 CASES = [
     # (name, draft, customer language, ticket text, failing check or None)
@@ -54,3 +57,45 @@ def test_code_checks(name, draft, lang, ticket, failing):
         assert failing in failed  # other checks may fail too (a card number is also an unknown number)
     else:
         assert failed == set()
+
+
+# ---- the judge sees the customer's plan (fake model, no API calls)
+
+PLAN_DRAFT = {"language": "nl", "faq_ids": ["F04"], "draft_english": "You can swap a shift ...",
+              "draft_reply": "Je kunt een dienst ruilen door de dienst in de app te openen en op \"Ruil aanbieden\" "
+                             "te tikken. De manager keurt het goed onder Rooster → Verzoeken. Team Roosterly"}
+
+
+def judge(fits_plan):
+    return checks.Verdict(supported_by_faq=True, answers_the_question=True, no_promises_beyond_faq=True,
+                          matches_reading_aid=True, fits_customer_plan=fits_plan, problems=[])
+
+
+def run_checks(monkeypatch, verdict, plan):
+    client = FakeClient(create=[text_reply("You can swap a shift ...")], parse=[parsed(verdict)])
+    monkeypatch.setattr(decide, "_client", client)
+    passed, results, _ = checks.check_reply(PLAN_DRAFT, "Dienst ruilen\nHoe ruil ik een dienst?", plan)
+    judge_message = client.requests[-1]["messages"][0]["content"]
+    return passed, results, judge_message
+
+
+def test_judge_sees_the_plan(monkeypatch):
+    passed, _, message = run_checks(monkeypatch, judge(True), "Basis")
+    assert passed and "<customer_plan>\nBasis\n</customer_plan>" in message
+
+
+def test_claim_not_on_the_customers_plan_fails(monkeypatch):
+    passed, results, _ = run_checks(monkeypatch, judge(False), "Basis")
+    assert not passed and "fits_customer_plan" in results["model"]
+
+
+def test_missing_plan_reaches_the_judge_as_unknown(monkeypatch, tmp_path):
+    reply = decide.Proposal(language="nl", category="question", priority="P4", priority_reason="How-to.", rule_flags=[],
+                            is_spam=False, faq_ids=PLAN_DRAFT["faq_ids"], fully_covered=True, handoff_note="Note.",
+                            draft_reply=PLAN_DRAFT["draft_reply"], draft_english=PLAN_DRAFT["draft_english"],
+                            confidence=0.9)
+    client = FakeClient(create=["ok", text_reply("You can swap a shift ...")], parse=[parsed(reply), parsed(judge(True))])
+    no_plan = {k: v for k, v in TICKET.items() if k != "customer_plan"}
+    hd = runner(monkeypatch, tmp_path, client, [no_plan])
+    assert run.main([]) == 0 and hd.posts == [("T900", "reply")]
+    assert "<customer_plan>\nunknown\n</customer_plan>" in client.requests[-1]["messages"][0]["content"]
