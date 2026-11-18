@@ -47,10 +47,10 @@ def decide_ticket(ticket):
     text = f"{subject}\n{body}"
     proposal, usage = propose(ticket, subject, body)
     d = route(proposal, flags)
-    calls, results = [usage], None
+    calls, results, reading = [usage], None, {}
 
     if d["action"] == "reply":
-        passed, results, usages = check_reply(d, text, ticket.get("customer_plan") or "unknown")
+        passed, results, usages = check_reply(d, text, ticket.get("customer_plan") or "unknown", reading=reading)
         calls += usages
         if not passed:
             failed = failed_names(results)
@@ -58,7 +58,8 @@ def decide_ticket(ticket):
                  "reason": d["reason"].replace("Answered from FAQ", "Draft from FAQ")
                  + f" The draft failed automatic checks ({', '.join(failed)}), so a human reviews it.",
                  "handoff_note": f"Automatic reply held back: failed checks {', '.join(failed)}.\n{d['handoff_note']}"}
-    return d, {"model_calls": calls, "checks": results}
+    # reading (draft, its English, the back-translation) is text: only the eval saves it, never the run log
+    return d, {"model_calls": calls, "checks": results, "reading": reading or None}
 
 
 def fallback_decision(ticket, error):

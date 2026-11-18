@@ -121,6 +121,23 @@ def test_the_back_translation_sees_only_the_draft(monkeypatch):
     assert f"<drafting_assistant_english>\n{PLAN_DRAFT['draft_english']}\n" in judge_message
 
 
+def test_reading_keeps_the_three_texts_as_checked(monkeypatch):  # for the eval's translations file only
+    reading = {}
+    monkeypatch.setattr(decide, "_client", FakeClient(create=[text_reply("BACK-TRANSLATION")],
+                                                      parse=[parsed(judge(True))]))
+    checks.check_reply(PLAN_DRAFT, "Dienst ruilen\nHoe ruil ik een dienst?", "Basis", reading=reading)
+    assert reading == {"draft_reply": PLAN_DRAFT["draft_reply"], "draft_english": PLAN_DRAFT["draft_english"],
+                       "back_translation": "BACK-TRANSLATION"}
+
+
+def test_no_reading_when_a_code_check_stops_the_draft(monkeypatch):
+    reading = {}
+    monkeypatch.setattr(decide, "_client", FakeClient())   # no model call expected
+    bad = {**PLAN_DRAFT, "draft_reply": "Je vindt ze onder Instellingen → Betalingen. Team Roosterly"}
+    checks.check_reply(bad, "Waar vind ik mijn facturen?", "Basis", reading=reading)
+    assert reading == {}
+
+
 def test_readings_that_disagree_hold_the_reply(monkeypatch):
     disagree = checks.Verdict(supported_by_faq=True, answers_the_question=True, no_promises_beyond_faq=True,
                               matches_reading_aid=False, fits_customer_plan=True, problems=["They differ."])

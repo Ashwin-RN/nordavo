@@ -168,9 +168,10 @@ def _faq_entries(ids):
     return "\n\n".join(parts)
 
 
-def model_checks(draft, draft_english, faq_ids, ticket_text, plan):
+def model_checks(draft, draft_english, faq_ids, ticket_text, plan, *, reading=None):
     """Back-translate with a call that sees only the draft, then judge. Returns (problems, usages).
-    An API error raises ModelFailed or ModelSetupError (see decide._call), like the triage call."""
+    An API error raises ModelFailed or ModelSetupError (see decide._call), like the triage call.
+    reading, if given, receives the three texts the judge compares (for the eval's translations file only)."""
     client = decide._get_client()
     usages = []
 
@@ -184,6 +185,8 @@ def model_checks(draft, draft_english, faq_ids, ticket_text, plan):
     back = "".join(b.text for b in bt.content if b.type == "text").strip()
     if bt.stop_reason != "end_turn" or not back:
         return [f"back-translation failed (stop_reason={bt.stop_reason})"], usages
+    if reading is not None:
+        reading.update(draft_reply=draft, draft_english=draft_english, back_translation=back)
 
     started = time.monotonic()
     jr = decide._call(
@@ -209,14 +212,15 @@ def failed_names(results):
     return None if results is None else sorted(name for name, problems in results.items() if problems)
 
 
-def check_reply(decision, ticket_text, plan):
+def check_reply(decision, ticket_text, plan, *, reading=None):
     """Return (passed, results, usages). results holds each check's problems: for the screen, never the log.
-    plan (the ticket's customer_plan, or "unknown") goes to the judge only; the code checks never see it."""
+    plan (the ticket's customer_plan, or "unknown") goes to the judge only; the code checks never see it.
+    reading: see model_checks. It holds text, so it never goes in results or the log."""
     results = code_checks(decision["draft_reply"], decision["language"], ticket_text)
     usages = []
     if not any(results.values()):                    # the two model calls only for drafts the code checks pass
         problems, usages = model_checks(decision["draft_reply"], decision.get("draft_english", ""),
-                                        decision["faq_ids"], ticket_text, plan)
+                                        decision["faq_ids"], ticket_text, plan, reading=reading)
         results["model"] = problems
     passed = not any(results.values())
     return passed, results, usages

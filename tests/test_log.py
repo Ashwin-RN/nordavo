@@ -2,8 +2,8 @@
 import json
 from pathlib import Path
 
-from agent import decide, run
-from tests.fakes import TICKET, FakeClient, parsed, runner
+from agent import checks, decide, run
+from tests.fakes import TICKET, FakeClient, parsed, runner, text_reply
 
 CARD_DRAFT = decide.Proposal(
     language="nl", category="billing", priority="P3", priority_reason="Card question.", rule_flags=[],
@@ -24,6 +24,20 @@ def test_failed_draft_logs_check_names_only(monkeypatch, tmp_path):
     (line,) = log_lines(tmp_path)
     assert line["checks"] == ["numbers", "payment"]
     assert "4111" not in json.dumps(line) and "1111" not in json.dumps(line)
+
+
+def test_the_back_translation_and_judge_notes_never_reach_the_log(monkeypatch, tmp_path):
+    reply = CARD_DRAFT.model_copy(update={
+        "category": "question", "draft_english": "You can swap a shift ...",
+        "draft_reply": "Je kunt een dienst ruilen door de dienst in de app te openen en op \"Ruil aanbieden\" te "
+                       "tikken. De manager keurt het goed onder Rooster → Verzoeken. Team Roosterly"})
+    verdict = checks.Verdict(supported_by_faq=True, answers_the_question=True, no_promises_beyond_faq=True,
+                             matches_reading_aid=False, fits_customer_plan=True, problems=["JUDGE-NOTE-SENTINEL"])
+    client = FakeClient(create=["ok", text_reply("BACK-TRANSLATION-SENTINEL")], parse=[parsed(reply), parsed(verdict)])
+    hd = runner(monkeypatch, tmp_path, client, [TICKET])
+    assert run.main([]) == 0 and hd.posts == [("T900", "handoff")]
+    (line,) = log_lines(tmp_path)
+    assert line["checks"] == ["model"] and "SENTINEL" not in json.dumps(line)
 
 
 def test_no_draft_checked_logs_null(monkeypatch, tmp_path):

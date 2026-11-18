@@ -1,10 +1,11 @@
 """The eval's scoring and runner. Rows and examples are invented; no network, no model."""
 import json
 
+from agent.checks import Verdict
 from agent.decide import Proposal
 from eval import run_eval
 from eval.score import action_miss, across_runs, score_row, totals
-from tests.fakes import FakeClient, connection_error, parsed, use
+from tests.fakes import FakeClient, connection_error, parsed, text_reply, use
 
 LABEL = {"language": "nl", "category": "question", "priority": "P4", "action": "reply", "reason": "FAQ F04."}
 
@@ -61,6 +62,27 @@ def test_a_priority_moving_between_two_wrong_values_counts_as_flipped():
     assert across_runs([{"totals": totals(a), "rows": a}, {"totals": totals(b), "rows": b}])["flipped"] == ["E1"]
 
 
+def test_judge_answers_are_names_in_four_states():
+    def row(checks):
+        return score_row("E1", LABEL, decision(), {"checks": checks})
+    assert row(None)["judge_failed"] is None                                   # no draft was checked
+    assert row({"labels": ["x"], "urls": []})["judge_failed"] is None          # a code check stopped it first
+    assert row({"labels": [], "model": []})["judge_failed"] == []              # judged and passed
+    r = row({"labels": [], "model": ["matches_reading_aid", "They differ: SECRET"]})
+    assert r["judge_failed"] == ["matches_reading_aid"] and "SECRET" not in json.dumps(r)
+    assert row({"model": ["judge failed (stop_reason=max_tokens)"]})["judge_failed"] == ["check_call_failed"]
+
+
+def test_totals_count_judge_answers_with_their_denominator():
+    rows = [score_row("E1", LABEL, decision(), {"checks": {"model": []}}),
+            score_row("E2", LABEL, decision(), {"checks": {"model": ["matches_reading_aid", "note"]}}),
+            score_row("E3", LABEL, decision(), {"checks": {"labels": ["y"]}}),
+            score_row("E4", LABEL, decision(), {"checks": {"model": ["back-translation failed (stop_reason=x)"]}})]
+    t = totals(rows)
+    assert t["reached_judge"] == 2                       # a failed check call never got a verdict
+    assert t["judge_failed"] == {"matches_reading_aid": 1, "check_call_failed": 1}
+
+
 def test_dirty_flag_ignores_results_files_only():
     def fake_git(status):
         return lambda *args: "abc1234\n" if args[0] == "rev-parse" else status
@@ -107,6 +129,43 @@ def test_eval_never_shows_the_label_and_writes_one_file_per_run(monkeypatch, tmp
     row = results[0]["rows"][0]
     assert row["pass"]["all"] and results[0]["prompt_version"] and "git" in results[0]
     assert "Waar vind ik" not in json.dumps(results[0])
+
+
+REPLY = HANDOFF.model_copy(update={  # invented: a draft that passes every code check, so it reaches the judge
+    "faq_ids": ["F04"], "fully_covered": True, "draft_english": "You can swap a shift ...",
+    "draft_reply": "Je kunt een dienst ruilen door de dienst in de app te openen en op \"Ruil aanbieden\" te tikken. "
+                   "De manager keurt het goed onder Rooster → Verzoeken. Team Roosterly"})
+
+
+def test_translations_file_holds_the_texts_and_the_scores_file_does_not(monkeypatch, tmp_path):
+    verdict = Verdict(supported_by_faq=True, answers_the_question=True, no_promises_beyond_faq=True,
+                      matches_reading_aid=False, fits_customer_plan=True, problems=["JUDGE-NOTE-SENTINEL"])
+    client = FakeClient(create=[text_reply("BACK-TRANSLATION-SENTINEL")], parse=[parsed(REPLY), parsed(verdict)])
+    code, results = eval_main(monkeypatch, tmp_path, client)
+    assert code == 0 and "SENTINEL" not in json.dumps(results)
+    assert results[0]["rows"][0]["judge_failed"] == ["matches_reading_aid"]
+    (path,) = tmp_path.glob("translations-*.json")
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    assert saved["git"] == results[0]["git"] and saved["prompt_version"] == results[0]["prompt_version"]
+    assert saved["entries"] == [{
+        "id": "E99", "language": "nl", "draft_reply": REPLY.draft_reply, "draft_english": REPLY.draft_english,
+        "back_translation": "BACK-TRANSLATION-SENTINEL", "judge_failed": ["matches_reading_aid"],
+        "judge_notes": ["JUDGE-NOTE-SENTINEL"]}]
+
+
+def test_show_leaves_the_judges_notes_to_the_translations_file(monkeypatch, tmp_path, capsys):
+    # the notes repeat the back-translation; on screen they would spoil a blind review of the Dutch drafts
+    verdict = Verdict(supported_by_faq=True, answers_the_question=True, no_promises_beyond_faq=True,
+                      matches_reading_aid=False, fits_customer_plan=True, problems=["JUDGE-NOTE-SENTINEL"])
+    client = FakeClient(create=[text_reply("BACK-TRANSLATION-SENTINEL")], parse=[parsed(REPLY), parsed(verdict)])
+    eval_main(monkeypatch, tmp_path, client, ["--show"])
+    assert "SENTINEL" not in capsys.readouterr().out
+
+
+def test_no_translation_entry_without_a_back_translation(monkeypatch, tmp_path):
+    code, _ = eval_main(monkeypatch, tmp_path, FakeClient(parse=[parsed(HANDOFF)]))
+    (path,) = tmp_path.glob("translations-*.json")
+    assert code == 0 and json.loads(path.read_text(encoding="utf-8"))["entries"] == []
 
 
 def test_eval_records_a_model_failure_and_carries_on(monkeypatch, tmp_path):
