@@ -86,3 +86,11 @@ def test_injection_cannot_raise_priority():  # T030 asks for P1
 ])
 def test_empty_ticket(subject, body, empty):
     assert is_empty({"subject": subject, "body": body}) == empty
+
+
+def test_prompt_copies_no_ticket_text():  # Fix D: the rules part of the prompt (before the FAQ) uses invented examples
+    from agent.decide import SYSTEM
+    rules_part = SYSTEM.split("<faq>")[0]
+    for copied in ("iOS 15", "iPhone", "how do I upgrade"):  # from E01 and T023
+        assert copied not in rules_part
+    assert "is not a contract change" in rules_part

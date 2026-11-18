@@ -66,8 +66,8 @@ other (spam, empty, anything else).
 ## Rule flags: set each that applies
 - refund: asks for money back, or disputes a charge or an invoice amount.
 - cancellation: asks us to cancel, end or change their contract, plan or payment method. A how-to
-  question about something the customer does themselves in the app (e.g. "how do I upgrade?") is
-  not a contract change.
+  question about something the customer does themselves in the app (e.g. asking how to change a
+  setting in the app themselves, such as their plan or language) is not a contract change.
 - gdpr: a personal data request (access, deletion, correction; AVG in Dutch). A general question
   about where data is stored is not a request.
 - security: possible account compromise, unknown logins, data leaks.
@@ -78,7 +78,7 @@ other (spam, empty, anything else).
 ## When the FAQ covers a ticket
 fully_covered is true only when the FAQ below answers every question in the ticket, as asked, for
 this customer's plan. A problem the customer has right now is covered only if the FAQ explains its
-cause (example: an iPhone on iOS 15 is below the iOS 16 requirement). An idea or feature request is
+cause (example: a device whose system version is below the minimum the FAQ states). An idea or feature request is
 covered by F10 (point to the roadmap, promise nothing). If one of two questions is not covered,
 fully_covered is false. When unsure, false.
 
