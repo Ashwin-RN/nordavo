@@ -2,7 +2,8 @@
 
 For each open ticket: mask -> rules -> model proposal -> code routing -> reply checks -> post -> log.
 
-Safe to re-run. The helpdesk's open list is the to-do list: a handled ticket is never fetched again.
+Safe to re-run. The helpdesk's open list is the to-do list: a live run never touches a handled ticket
+(a dry run with --ticket may re-check one, posting nothing).
 Exit code 0 means every ticket was handled; 1 means some are still open or the helpdesk was
 unavailable (run again); 2 means the helpdesk or the model API rejected our setup (bad key, unknown
 model, malformed request) and the run stopped.

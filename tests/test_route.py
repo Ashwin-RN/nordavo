@@ -82,3 +82,8 @@ def test_other_is_a_value_the_form_accepts():  # built through validation, so re
 def test_unnamed_other_language_still_explains_itself():
     note = route.route(proposal(language="other", other_language=""), set())["handoff_note"]
     assert note.startswith("Customer wrote in a language we do not reply in")
+
+
+def test_a_new_hard_rule_needs_only_its_keywords():  # rules.py: "add a line to HARD_RULES. Nothing else changes."
+    d = route.route(CLEAN, {"pricing_dispute"})        # a flag with no wording in RULE_TEXT yet
+    assert d["action"] == "handoff" and "pricing dispute" in d["reason"] and "pricing dispute" in d["handoff_note"]

@@ -83,8 +83,9 @@ def route(proposal, code_flags):
 
 
 def rule_text(flags):
-    """The client rules that apply, in words, e.g. "legal threat; refund or disputed charge"."""
-    return "; ".join(RULE_TEXT[f] for f in sorted(flags))
+    """The client rules that apply, in words, e.g. "legal threat; refund or disputed charge".
+    A rule with no wording in RULE_TEXT yet is described by its own name, so a new hard rule never stops the run."""
+    return "; ".join(RULE_TEXT.get(f, f.replace("_", " ")) for f in sorted(flags))
 
 
 def rule_note(note, flags):
