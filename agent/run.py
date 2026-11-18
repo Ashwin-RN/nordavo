@@ -224,4 +224,6 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
+    for stream in (sys.stdout, sys.stderr):  # Windows writes pipes and files in cp1252, which has no "→"
+        stream.reconfigure(encoding="utf-8")
     sys.exit(main())
