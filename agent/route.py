@@ -4,9 +4,10 @@ First match wins:
   1. empty ticket                          -> close   (decided by code, no model call)
   2. model says spam, and no rule flag      -> close
   3. any rule flag (model or keyword) or payment details -> handoff
-  4. no FAQ id, unknown FAQ id, or not fully covered     -> handoff
-  5. model confidence below MIN_REPLY_CONFIDENCE          -> handoff
-  6. otherwise                             -> reply candidate (checks.py checks it before it is sent)
+  4. written in a language we don't reply in ("other")  -> handoff, posted as "en", the note names it
+  5. no FAQ id, unknown FAQ id, or not fully covered     -> handoff
+  6. model confidence below MIN_REPLY_CONFIDENCE          -> handoff
+  7. otherwise                            -> reply candidate (checks.py checks it before it is sent)
 """
 import re
 
@@ -52,7 +53,10 @@ def route(proposal, code_flags):
     """Return the decision dict to post (action plus API fields) and why. code_flags come from rules.screen()."""
     flags = set(proposal.rule_flags) | set(code_flags)
     priority = priority_floor(proposal.priority, flags)
-    base = {"language": proposal.language, "category": proposal.category, "priority": priority,
+    other = proposal.language == "other"            # the API takes only nl, en, de: post "en", name it in the note
+    language_name = proposal.other_language.strip() or "a language we do not reply in"
+    note = (f"Customer wrote in {language_name}; we reply only in nl, en, de.\n" if other else "") + proposal.handoff_note
+    base = {"language": "en" if other else proposal.language, "category": proposal.category, "priority": priority,
             "confidence": round(max(0.0, min(1.0, proposal.confidence)), 2), "flags": sorted(flags)}
 
     if proposal.is_spam and not flags:
@@ -62,7 +66,12 @@ def route(proposal, code_flags):
     if flags:
         return {**base, "action": "handoff", "route_reason": "rule:" + ",".join(sorted(flags)),
                 "reason": f"{proposal.priority_reason} Client rule, a human handles it: {rule_text(flags)}.",
-                "handoff_note": rule_note(proposal.handoff_note, flags)}
+                "handoff_note": rule_note(note, flags)}
+
+    if other:
+        return {**base, "action": "handoff", "route_reason": "language:other", "handoff_note": note,
+                "reason": f"{proposal.priority_reason} Handed to a human: written in {language_name}, "
+                          f"a language we do not reply in."}
 
     faq_ids = [f.upper() for f in proposal.faq_ids]
     unknown = [f for f in faq_ids if f not in _known_faq_ids()]

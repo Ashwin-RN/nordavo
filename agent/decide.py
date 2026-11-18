@@ -29,8 +29,10 @@ Flag = Literal["refund", "cancellation", "gdpr", "security", "legal", "churn", "
 
 
 class Proposal(BaseModel):
-    language: Literal["nl", "en", "de"] = Field(
-        description="Language of the customer's own sentences. Quoted button texts or error messages do not count.")
+    language: Literal["nl", "en", "de", "other"] = Field(
+        description="Language of the customer's own sentences. Quoted button texts or error messages do not count. "
+                    "\"other\" if they wrote in none of nl, en, de.")
+    other_language: str = Field("", description="If language is \"other\": its English name, e.g. French. Else empty.")
     category: Literal["bug", "billing", "feature_request", "question", "other"]
     priority: Literal["P1", "P2", "P3", "P4"]
     priority_reason: str = Field(description="One English sentence: why this category and priority.")

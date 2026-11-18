@@ -51,3 +51,34 @@ def test_injection_does_not_raise_the_priority():
     assert d["action"] == "handoff" and d["priority"] == "P4"   # handed off, but no floor for injection
     # Code does not lower it either: the model's own reading of the ticket sets the priority.
     assert route.route(proposal(rule_flags=["injection"], priority="P1"), set())["priority"] == "P1"
+
+
+# ---- languages we don't reply in (Fix J)
+
+FRENCH = dict(language="other", other_language="French")
+
+
+def test_other_language_is_handed_off_in_en_and_named():
+    d = route.route(proposal(**FRENCH), set())          # even a covered draft with high confidence
+    assert d["action"] == "handoff" and d["language"] == "en" and d["route_reason"] == "language:other"
+    assert d["handoff_note"].startswith("Customer wrote in French")
+
+
+def test_other_language_spam_still_closes():
+    d = route.route(proposal(is_spam=True, **FRENCH), set())
+    assert d["action"] == "close" and d["language"] == "en"
+
+
+def test_other_language_with_a_rule_keeps_the_rule_and_names_the_language():
+    d = route.route(proposal(**FRENCH), {"refund"})
+    assert d["route_reason"] == "rule:refund" and d["language"] == "en" and "French" in d["handoff_note"]
+
+
+def test_other_is_a_value_the_form_accepts():  # built through validation, so removing "other" from the form fails here
+    p = Proposal.model_validate({**CLEAN.model_dump(), **FRENCH})
+    assert route.route(p, set())["language"] == "en"
+
+
+def test_unnamed_other_language_still_explains_itself():
+    note = route.route(proposal(language="other", other_language=""), set())["handoff_note"]
+    assert note.startswith("Customer wrote in a language we do not reply in")

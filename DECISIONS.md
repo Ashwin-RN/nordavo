@@ -63,6 +63,7 @@ The API reference says what each error means. These are the choices it leaves op
 | "How do I upgrade?" (T023) is answered from the FAQ | A how-to about self-service is not a request for us to change the contract |
 | GDPR requests are at least P2, not P1 | Nordavo's own example E09 labels one P2 |
 | A ticket is empty only when neither the subject (after reply prefixes such as "Re:", "Antw:", "AW:") nor the body has a letter or digit | Close is the one action no human sees again; a question written only in the subject must not be buried |
+| A ticket in a language we don't reply in (e.g. French) goes to a human and is posted with language "en"; the note opens with the real language, which the model names in its own field | The API accepts only nl, en and de, and our reply checks only know those three; "en" because the handoff note is English. Spam in another language still closes, and a rule still wins. Cost: such a close or rule handoff is logged as "en" with nothing marking it as another language |
 | An empty ticket is closed with language "nl" | The API requires a language; most customers write Dutch |
 | A reply needs the model's confidence at 0.7 or more | The brief leaves "unsure" open; this is one gate among several, and a setting |
 
