@@ -32,6 +32,7 @@ def score_row(example_id, label, decision, extra=None, error=None):
         "id": example_id, "label": label, "predicted": predicted, "pass": passed,
         "route_reason": decision.get("route_reason") if decision else None,
         "rule_flags": decision.get("flags", []) if decision else [],
+        "faq_ids": decision.get("faq_ids", []) if decision else [],   # the entries the judge was shown
         "checks": None if checks is None else sorted(k for k, v in checks.items() if v),  # names only
         "judge_failed": judge_names(checks),
         "error": error,

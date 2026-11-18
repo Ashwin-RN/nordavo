@@ -23,6 +23,12 @@ def test_row_scores_each_field_and_keeps_no_text():
     assert "secret text" not in json.dumps(row) and "Hoi" not in json.dumps(row) and "FAQ F04." not in json.dumps(row)
 
 
+def test_row_records_the_cited_faq_ids():  # ids only: shows which entries the judge was shown
+    assert score_row("E1", LABEL, decision(faq_ids=["F05"]))["faq_ids"] == ["F05"]
+    assert score_row("E1", LABEL, decision())["faq_ids"] == []
+    assert score_row("E1", LABEL, None, error="model_failed: x")["faq_ids"] == []
+
+
 def test_model_failure_fails_every_field():
     row = score_row("E99", LABEL, None, error="model_failed: timeout")
     assert not any(row["pass"].values()) and action_miss(row) == "lost_work"
