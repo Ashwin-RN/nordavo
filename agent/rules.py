@@ -4,6 +4,7 @@
 2. hard_rule_hits() finds the client's always-a-human topics by keyword, as a backstop to the model.
 3. priority_floor() raises the priority for topics the brief says are urgent.
 4. is_empty()     spots a ticket with nothing to answer.
+5. screen()       runs 1 and 2 on a ticket: the normal path and the fallback both use it.
 
 To add a hard rule or a keyword: add a line to HARD_RULES. Nothing else changes.
 """
@@ -158,3 +159,14 @@ PAYMENT_KINDS = {"card", "long_number", "iban", "iban_like", "cvc"}
 
 def has_payment_details(text):
     return bool(mask(text)[1] & PAYMENT_KINDS)
+
+
+def screen(ticket):
+    """Every code-only step before the model, in one place: used by the normal path and the fallback.
+    Returns (masked subject, masked body, flags): keyword rules, plus "payment_details" if any were masked."""
+    subject, k1 = mask(ticket.get("subject") or "")
+    body, k2 = mask(ticket.get("body") or "")
+    flags = hard_rule_hits(f"{subject}\n{body}")
+    if (k1 | k2) & PAYMENT_KINDS:
+        flags.add("payment_details")
+    return subject, body, flags

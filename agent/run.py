@@ -16,8 +16,8 @@ from agent.checks import check_reply, detect_language, failed_names
 from agent.config import load_config
 from agent.decide import ModelFailed, ModelSetupError, check_setup, propose
 from agent.helpdesk import AlreadyHandled, Helpdesk, HelpdeskError, Unavailable
-from agent.route import empty_decision, route
-from agent.rules import hard_rule_hits, is_empty, mask
+from agent.route import empty_decision, route, rule_note, rule_text
+from agent.rules import is_empty, priority_floor, screen
 from agent.runlog import RunLog
 
 LOCK = ".run.lock"
@@ -30,11 +30,10 @@ def decide_ticket(ticket):
         d = empty_decision()
         return d, {"model_calls": [], "checks": None}
 
-    subject, k1 = mask(ticket.get("subject") or "")
-    body, k2 = mask(ticket.get("body") or "")
+    subject, body, flags = screen(ticket)
     text = f"{subject}\n{body}"
     proposal, usage = propose(ticket, subject, body)
-    d = route(proposal, hard_rule_hits(text), k1 | k2)
+    d = route(proposal, flags)
     calls, checks = [usage], None
 
     if d["action"] == "reply":
@@ -50,13 +49,14 @@ def decide_ticket(ticket):
 
 
 def fallback_decision(ticket, error):
-    """Model failed twice: hand off so the ticket is not left behind."""
-    body = mask(ticket.get("body") or "")[0]
+    """Model failed twice: hand off, keeping the code-only rules (masking, flags, priority floors)."""
+    subject, body, flags = screen(ticket)
+    rules = f" Client rule: {rule_text(flags)}." if flags else ""
     return {
-        "action": "handoff", "language": detect_language(body) or "nl", "category": "other", "priority": "P3",
-        "reason": "Automatic triage failed, so a human triages this ticket.", "route_reason": "model_failed",
-        "handoff_note": f"Automatic triage failed ({error}). Please read and triage this ticket manually.",
-        "flags": [],
+        "action": "handoff", "language": detect_language(f"{subject}\n{body}") or "nl", "category": "other",
+        "priority": priority_floor("P3", flags), "flags": sorted(flags), "route_reason": "model_failed",
+        "reason": "Automatic triage failed, so a human triages this ticket." + rules,
+        "handoff_note": rule_note(f"Automatic triage failed ({error}). Please read and triage it manually.", flags),
     }
 
 

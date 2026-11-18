@@ -11,7 +11,7 @@ First match wins:
 import re
 
 from agent.config import setting
-from agent.rules import PAYMENT_KINDS, priority_floor
+from agent.rules import priority_floor
 
 # Below this self-reported confidence a reply goes to a human instead. The model's confidence is a
 # weak signal on its own, so it is one gate among several, not the main one.
@@ -48,11 +48,9 @@ def empty_decision():
     }
 
 
-def route(proposal, keyword_flags, payment_kinds):
-    """Return the decision dict to post (action plus API fields) and why."""
-    flags = set(proposal.rule_flags) | set(keyword_flags)
-    if payment_kinds & PAYMENT_KINDS:
-        flags.add("payment_details")
+def route(proposal, code_flags):
+    """Return the decision dict to post (action plus API fields) and why. code_flags come from rules.screen()."""
+    flags = set(proposal.rule_flags) | set(code_flags)
     priority = priority_floor(proposal.priority, flags)
     base = {"language": proposal.language, "category": proposal.category, "priority": priority,
             "confidence": round(max(0.0, min(1.0, proposal.confidence)), 2), "flags": sorted(flags)}
@@ -62,10 +60,9 @@ def route(proposal, keyword_flags, payment_kinds):
                 "reason": f"{proposal.priority_reason} Spam or unrelated to Roosterly: closed."}
 
     if flags:
-        why = "; ".join(RULE_TEXT[f] for f in sorted(flags))
         return {**base, "action": "handoff", "route_reason": "rule:" + ",".join(sorted(flags)),
-                "reason": f"{proposal.priority_reason} Client rule, a human handles it: {why}.",
-                "handoff_note": _note(proposal.handoff_note, flags)}
+                "reason": f"{proposal.priority_reason} Client rule, a human handles it: {rule_text(flags)}.",
+                "handoff_note": rule_note(proposal.handoff_note, flags)}
 
     faq_ids = [f.upper() for f in proposal.faq_ids]
     unknown = [f for f in faq_ids if f not in _known_faq_ids()]
@@ -86,6 +83,11 @@ def route(proposal, keyword_flags, payment_kinds):
             "handoff_note": proposal.handoff_note}
 
 
-def _note(note, flags):
-    head = "Rule: " + "; ".join(RULE_TEXT[f] for f in sorted(flags)) + "."
-    return f"{head}\n{note}".strip()
+def rule_text(flags):
+    """The client rules that apply, in words, e.g. "legal threat; refund or disputed charge"."""
+    return "; ".join(RULE_TEXT[f] for f in sorted(flags))
+
+
+def rule_note(note, flags):
+    """The handoff note, headed by the client rules that apply, if any."""
+    return f"Rule: {rule_text(flags)}.\n{note}".strip() if flags else note
