@@ -56,7 +56,7 @@ The API reference says what each error means. These are the choices it leaves op
 
 | Assumption | Why |
 |---|---|
-| Text that tries to instruct the AI (T007, T030) goes to a human as a possible security incident, and cannot raise its own priority | Otherwise the attacker gets the P1 they asked for |
+| Text that tries to instruct the AI (T007, T030) goes to a human as a possible security incident. The injection flag has no priority floor, so asking for P1 does not earn one; the model's own reading of the ticket still sets the priority, and code does not lower it | A floor would hand the attacker the P1 they asked for; a cap would also hide a genuine urgent ticket that contains an injection |
 | A customer sending card details (T008) goes to a human, details masked | Asking us to change payment method is a contract change |
 | "How do I upgrade?" (T023) is answered from the FAQ | A how-to about self-service is not a request for us to change the contract |
 | GDPR requests are at least P2, not P1 | Nordavo's own example E09 labels one P2 |
