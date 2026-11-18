@@ -78,6 +78,7 @@ The API reference says what each error means. These are the choices it leaves op
 |---|---|
 | Claude Code | Design talked through step by step, code written with it, every layer explained back before commit |
 | Second-opinion review | A stronger model reviewed layers 1 to 5 against the brief; findings fixed or listed as gaps |
+| Dutch review and planted errors | Claude Opus 5.5 (a stronger model, same vendor as the agent, not a native speaker) wrote the blind readings of the Dutch drafts and the planted errors in `eval/`; no Dutch speaker has checked them |
 
 ## Left out on purpose (gaps)
 
