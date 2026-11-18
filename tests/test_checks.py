@@ -107,6 +107,27 @@ def run_checks(monkeypatch, verdict, plan):
     return passed, results, judge_message
 
 
+def test_the_back_translation_sees_only_the_draft(monkeypatch):
+    # the independent reading: no ticket, no plan, no FAQ, and never the drafter's own English version
+    ticket = "Dienst ruilen\nHoe ruil ik een dienst met een collega?"
+    client = FakeClient(create=[text_reply("BACK-TRANSLATION")], parse=[parsed(judge(True))])
+    monkeypatch.setattr(decide, "_client", client)
+    checks.check_reply(PLAN_DRAFT, ticket, "Basis")
+    back, judged = client.requests
+    assert back["system"] == checks.BACK_TRANSLATE_SYSTEM
+    assert back["messages"] == [{"role": "user", "content": f"<text>\n{PLAN_DRAFT['draft_reply']}\n</text>"}]
+    judge_message = judged["messages"][0]["content"]                 # the judge gets both readings, side by side
+    assert "<independent_translation>\nBACK-TRANSLATION\n</independent_translation>" in judge_message
+    assert f"<drafting_assistant_english>\n{PLAN_DRAFT['draft_english']}\n" in judge_message
+
+
+def test_readings_that_disagree_hold_the_reply(monkeypatch):
+    disagree = checks.Verdict(supported_by_faq=True, answers_the_question=True, no_promises_beyond_faq=True,
+                              matches_reading_aid=False, fits_customer_plan=True, problems=["They differ."])
+    passed, results, _ = run_checks(monkeypatch, disagree, "Basis")
+    assert not passed and "matches_reading_aid" in results["model"]
+
+
 def test_a_dutch_draft_labelled_english_is_held_before_any_model_call(monkeypatch):
     # route.py lets an English draft be its own English version; a wrong "en" label must not slip a Dutch draft past
     client = FakeClient(create=[], parse=[])          # nothing queued: any model call would fail the test
