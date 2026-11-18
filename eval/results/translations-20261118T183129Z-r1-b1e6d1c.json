@@ -1,0 +1,82 @@
+{
+ "date": "2026-11-18T18:31:29+00:00",
+ "git": "b1e6d1c",
+ "dirty": false,
+ "prompt_version": "f7694b1d",
+ "triage_model": "claude-haiku-5-5",
+ "check_model": "claude-haiku-5-5",
+ "entries": [
+  {
+   "id": "E01",
+   "language": "en",
+   "draft_reply": "Hello,\n\nThank you for contacting us. The Roosterly mobile app requires iOS 16 or later, and your iPhone 8 is running iOS 15, which is below that minimum. This is most likely why the app crashes. Please update your iPhone to iOS 16 or later and try again.\n\nTeam Roosterly",
+   "draft_english": "Hello,\n\nThank you for contacting us. The Roosterly mobile app requires iOS 16 or later, and your iPhone 8 is running iOS 15, which is below that minimum. This is most likely why the app crashes. Please update your iPhone to iOS 16 or later and try again.\n\nTeam Roosterly",
+   "back_translation": "Hello,\n\nThank you for contacting us. The Roosterly mobile app requires iOS 16 or later, and your iPhone 8 is running iOS 15, which is below that minimum. This is most likely why the app crashes. Please update your iPhone to iOS 16 or later and try again.\n\nTeam Roosterly",
+   "judge_failed": [
+    "supported_by_faq"
+   ],
+   "judge_notes": [
+    "The FAQ says the app works on iOS 16 and later but does not say that iOS 15 causes crashes, so the claim that the iOS version is most likely why the app crashes is not stated in the FAQ."
+   ]
+  },
+  {
+   "id": "E02",
+   "language": "nl",
+   "draft_reply": "Goedendag, u kunt het btw-nummer zelf aanpassen onder Instellingen → Bedrijfsgegevens. De wijziging geldt voor toekomstige facturen. Met vriendelijke groet, Team Roosterly",
+   "draft_english": "Hello, you can change the VAT number yourself under Instellingen (Settings) → Bedrijfsgegevens (Company details). The change applies to future invoices. Kind regards, Team Roosterly",
+   "back_translation": "Good day, you can change the VAT number yourself under Instellingen → Bedrijfsgegevens. The change applies to future invoices. Kind regards, Team Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E04",
+   "language": "nl",
+   "draft_reply": "Hoi, je opent de dienst in de app en tikt op \"Ruil aanbieden\". Een collega met dezelfde functie kan de ruil dan accepteren. Daarna keurt de manager de ruil goed onder Rooster → Verzoeken. Succes!\n\nTeam Roosterly",
+   "draft_english": "Hi, you open the shift in the app and tap \"Offer swap\". A colleague with the same role can then accept the swap. After that the manager approves the swap under Rota → Requests. Good luck!\n\nTeam Roosterly",
+   "back_translation": "Hi, you open the shift in the app and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. After that, the manager approves the swap under Rooster → Verzoeken. Good luck!\n\nTeam Roosterly",
+   "judge_failed": [
+    "matches_reading_aid"
+   ],
+   "judge_notes": [
+    "Drafting English says 'Offer swap' while the Dutch button label is 'Ruil aanbieden'; translation keeps the Dutch label and the drafting version does not match it.",
+    "Drafting English says 'under Rota → Requests' while the translation keeps 'Rooster → Verzoeken'; the menu names do not match the translation.",
+    "Drafting English says 'same role' while translation says 'same function'; wording differs."
+   ]
+  },
+  {
+   "id": "E05",
+   "language": "nl",
+   "draft_reply": "Bedankt voor je idee om Roosterly met Google Agenda te koppelen. We lezen elke suggestie. Je kunt het idee op ons publieke bord roadmap.roosterly.nl bekijken en er op stemmen. We kunnen helaas geen leverdatum toezeggen.\n\nTeam Roosterly",
+   "draft_english": "Thank you for your idea to connect Roosterly with Google Calendar. We read every suggestion. You can view the idea on our public roadmap at roadmap.roosterly.nl and vote for it. Unfortunately we cannot promise a delivery date.\n\nTeam Roosterly",
+   "back_translation": "Thank you for your idea to connect Roosterly with Google Agenda. We read every suggestion. You can view the idea on our public board roadmap.roosterly.nl and vote for it. Unfortunately, we cannot promise a delivery date.\n\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E07",
+   "language": "nl",
+   "draft_reply": "Hallo,\n\nPlus kost €6 per actieve medewerker per maand, exclusief btw. Voor 25 medewerkers komt dat neer op €150 per maand, exclusief btw. Plus bevat onbeperkt aantal vestigingen, API-toegang en de salarisintegraties (Nmbrs, Loket.nl en AFAS). Heeft u nog vragen, dan horen we het graag.\n\nTeam Roosterly",
+   "draft_english": "Hello, Plus costs €6 per active employee per month, excluding VAT. For 25 employees that comes to €150 per month, excluding VAT. Plus includes unlimited locations, API access and the payroll integrations (Nmbrs, Loket.nl and AFAS). If you have any questions, we are happy to hear them. Team Roosterly",
+   "back_translation": "Hello,\n\nPlus costs €6 per active employee per month, excluding VAT. For 25 employees, that amounts to €150 per month, excluding VAT. Plus includes an unlimited number of locations, API access, and the salary integrations (Nmbrs, Loket.nl and AFAS). If you have any questions, we would be happy to hear from you.\n\nTeam Roosterly",
+   "judge_failed": [
+    "supported_by_faq"
+   ],
+   "judge_notes": [
+    "The translation and drafting English name the payroll integrations as Nmbrs, Loket.nl and AFAS, but the FAQ only mentions 'payroll integrations' without naming them."
+   ]
+  },
+  {
+   "id": "E10",
+   "language": "nl",
+   "draft_reply": "Hoi, actuele storingen en gepland onderhoud zie je op status.roosterly.nl. Daar vind je de meest recente informatie.\n\nTeam Roosterly",
+   "draft_english": "Hi, you can find current outages and planned maintenance at status.roosterly.nl. That page has the most recent information.\n\nTeam Roosterly",
+   "back_translation": "Hi, current outages and planned maintenance can be found at status.roosterly.nl. You'll find the most recent information there.\n\nTeam Roosterly",
+   "judge_failed": [
+    "answers_the_question"
+   ],
+   "judge_notes": [
+    "Customer asked whether maintenance is planned tonight; reply only points to the status page and does not say whether tonight's maintenance exists, which the FAQ does not state."
+   ]
+  }
+ ]
+}

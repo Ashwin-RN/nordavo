@@ -1,0 +1,75 @@
+{
+ "date": "2026-11-18T18:33:26+00:00",
+ "git": "b1e6d1c",
+ "dirty": false,
+ "prompt_version": "f7694b1d",
+ "triage_model": "claude-haiku-5-5",
+ "check_model": "claude-haiku-5-5",
+ "entries": [
+  {
+   "id": "E01",
+   "language": "en",
+   "draft_reply": "Hello, thank you for your message. The Roosterly app requires iOS 16 or later, and your iPhone is running iOS 15, which is why the app crashes. Please update your iOS to version 16 or later. Kind regards, Team Roosterly",
+   "draft_english": "Hello, thank you for your message. The Roosterly app requires iOS 16 or later, and your iPhone is running iOS 15, which is why the app crashes. Please update your iOS to version 16 or later. Kind regards, Team Roosterly",
+   "back_translation": "Hello, thank you for your message. The Roosterly app requires iOS 16 or later, and your iPhone is running iOS 15, which is why the app crashes. Please update your iOS to version 16 or later. Kind regards, Team Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E02",
+   "language": "nl",
+   "draft_reply": "Goedendag, u kunt het nieuwe btw-nummer zelf aanpassen onder Instellingen → Bedrijfsgegevens. De wijziging geldt voor toekomstige facturen. Heeft u daarna nog vragen, dan horen we het graag.\n\nMet vriendelijke groet,\nTeam Roosterly",
+   "draft_english": "Hello, you can change the VAT number yourself under Settings → Company details (Instellingen → Bedrijfsgegevens). The change applies to future invoices. If you have any further questions afterwards, we are happy to hear them.\n\nKind regards,\nTeam Roosterly",
+   "back_translation": "Good day, you can change the new VAT number yourself under Instellingen → Bedrijfsgegevens. The change applies to future invoices. If you have any further questions afterward, we would be happy to hear them.\n\nKind regards,\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E04",
+   "language": "nl",
+   "draft_reply": "Hoi, je opent de dienst in de app en tikt op \"Ruil aanbieden\". Een collega met dezelfde functie kan de ruil accepteren. Daarna keurt je manager de ruil goed onder Rooster → Verzoeken. Groet, Team Roosterly",
+   "draft_english": "Hi, you open the shift in the app and tap \"Offer swap\". A colleague with the same role can accept the swap. Then your manager approves the swap under Rota → Requests. Regards, Team Roosterly",
+   "back_translation": "Hi, you open the shift in the app and tap \"Ruil aanbieden\". A colleague with the same job can accept the swap. Then your manager approves the swap under Rooster → Verzoeken. Regards, Team Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E05",
+   "language": "nl",
+   "draft_reply": "Bedankt voor uw idee. Wij lezen elk idee en u kunt het terugvinden op ons publieke roadmap via roadmap.roosterly.nl, waar u op ideeën kunt stemmen. Wij kunnen helaas geen leverdatum toezeggen voor individuele verzoeken. Team Roosterly",
+   "draft_english": "Thank you for your idea. We read every idea and you can find it on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. Unfortunately we cannot promise a delivery date for individual requests. Team Roosterly",
+   "back_translation": "Thank you for your idea. We read every idea and you can find it on our public roadmap at roadmap.roosterly.nl, where you can vote for ideas. Unfortunately, we cannot promise a delivery date for individual requests. Team Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E07",
+   "language": "nl",
+   "draft_reply": "Hallo, Plus kost €6 per actieve medewerker per maand, excl. btw. Voor 25 medewerkers komt dat neer op €150 per maand, excl. btw. Plus bevat ook onbeperkt aantal vestigingen, API-toegang en de salarisintegraties met Nmbrs, Loket.nl en AFAS. Team Roosterly",
+   "draft_english": "Hello, Plus costs €6 per active employee per month, excluding VAT. For 25 employees that comes to €150 per month, excluding VAT. Plus also includes unlimited locations, API access and the payroll integrations with Nmbrs, Loket.nl and AFAS. Team Roosterly",
+   "back_translation": "Hello, Plus costs €6 per active employee per month, excl. VAT. For 25 employees, that comes down to €150 per month, excl. VAT. Plus also includes an unlimited number of locations, API access, and the salary integrations with Nmbrs, Loket.nl and AFAS. Team Roosterly",
+   "judge_failed": [
+    "supported_by_faq"
+   ],
+   "judge_notes": [
+    "The reply names Nmbrs, Loket.nl and AFAS as the payroll integrations. The FAQ only says Plus includes 'the payroll integrations' and does not name any providers."
+   ]
+  },
+  {
+   "id": "E10",
+   "language": "nl",
+   "draft_reply": "Hoi, je kunt actuele storingen en gepland onderhoud zien op status.roosterly.nl. Daar vind je altijd de meest recente informatie.\n\nTeam Roosterly",
+   "draft_english": "Hi, you can see current outages and planned maintenance at status.roosterly.nl. You will always find the most recent information there.\n\nTeam Roosterly",
+   "back_translation": "Hi, you can see current outages and scheduled maintenance at status.roosterly.nl. There you will always find the most recent information.\n\nTeam Roosterly",
+   "judge_failed": [
+    "supported_by_faq",
+    "answers_the_question",
+    "no_promises_beyond_faq"
+   ],
+   "judge_notes": [
+    "The FAQ only says status.roosterly.nl shows current outages and planned maintenance; it does not say the site always has the most recent information, so that claim is unsupported.",
+    "The customer asked whether maintenance is planned tonight; the reply points to the status page without confirming or denying tonight's maintenance, so it does not directly answer the question."
+   ]
+  }
+ ]
+}

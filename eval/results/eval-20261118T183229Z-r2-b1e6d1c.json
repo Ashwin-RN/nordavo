@@ -1,0 +1,354 @@
+{
+ "date": "2026-11-18T18:32:29+00:00",
+ "git": "b1e6d1c",
+ "dirty": false,
+ "prompt_version": "f7694b1d",
+ "triage_model": "claude-haiku-5-5",
+ "check_model": "claude-haiku-5-5",
+ "totals": {
+  "n": 10,
+  "language": 10,
+  "category": 9,
+  "priority": 9,
+  "action": 6,
+  "all": 6,
+  "unsafe": 0,
+  "lost_work": 4,
+  "other_miss": 0,
+  "replies_labelled": 6,
+  "replies_made": 2,
+  "replies_right": 2,
+  "model_errors": 0,
+  "reached_judge": 6,
+  "judge_failed": {
+   "supported_by_faq": 2,
+   "answers_the_question": 2
+  },
+  "tokens_in": 46146,
+  "tokens_out": 8107,
+  "cost_usd": 0.008669,
+  "cost_per_100_usd": 0.0867
+ },
+ "rows": [
+  {
+   "id": "E01",
+   "label": {
+    "language": "en",
+    "category": "bug",
+    "priority": "P3",
+    "action": "reply"
+   },
+   "predicted": {
+    "language": "en",
+    "category": "bug",
+    "priority": "P2",
+    "action": "handoff"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": false,
+    "action": false,
+    "all": false
+   },
+   "route_reason": "checks_failed:model",
+   "rule_flags": [],
+   "checks": [
+    "model"
+   ],
+   "judge_failed": [
+    "supported_by_faq"
+   ],
+   "error": null,
+   "tokens_in": 5202,
+   "tokens_out": 1859,
+   "cost_usd": 0.001451
+  },
+  {
+   "id": "E02",
+   "label": {
+    "language": "nl",
+    "category": "billing",
+    "priority": "P4",
+    "action": "reply"
+   },
+   "predicted": {
+    "language": "nl",
+    "category": "billing",
+    "priority": "P4",
+    "action": "reply"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": true,
+    "action": true,
+    "all": true
+   },
+   "route_reason": "faq:F06",
+   "rule_flags": [],
+   "checks": [],
+   "judge_failed": [],
+   "error": null,
+   "tokens_in": 5197,
+   "tokens_out": 1393,
+   "cost_usd": 0.001216
+  },
+  {
+   "id": "E03",
+   "label": {
+    "language": "nl",
+    "category": "billing",
+    "priority": "P2",
+    "action": "handoff"
+   },
+   "predicted": {
+    "language": "nl",
+    "category": "billing",
+    "priority": "P2",
+    "action": "handoff"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": true,
+    "action": true,
+    "all": true
+   },
+   "route_reason": "rule:refund",
+   "rule_flags": [
+    "refund"
+   ],
+   "checks": null,
+   "judge_failed": null,
+   "error": null,
+   "tokens_in": 3787,
+   "tokens_out": 451,
+   "cost_usd": 0.000604
+  },
+  {
+   "id": "E04",
+   "label": {
+    "language": "nl",
+    "category": "question",
+    "priority": "P4",
+    "action": "reply"
+   },
+   "predicted": {
+    "language": "nl",
+    "category": "question",
+    "priority": "P4",
+    "action": "reply"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": true,
+    "action": true,
+    "all": true
+   },
+   "route_reason": "faq:F03",
+   "rule_flags": [],
+   "checks": [],
+   "judge_failed": [],
+   "error": null,
+   "tokens_in": 5217,
+   "tokens_out": 594,
+   "cost_usd": 0.000818
+  },
+  {
+   "id": "E05",
+   "label": {
+    "language": "nl",
+    "category": "feature_request",
+    "priority": "P4",
+    "action": "reply"
+   },
+   "predicted": {
+    "language": "nl",
+    "category": "feature_request",
+    "priority": "P4",
+    "action": "handoff"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": true,
+    "action": false,
+    "all": false
+   },
+   "route_reason": "checks_failed:model",
+   "rule_flags": [],
+   "checks": [
+    "model"
+   ],
+   "judge_failed": [
+    "answers_the_question"
+   ],
+   "error": null,
+   "tokens_in": 5132,
+   "tokens_out": 631,
+   "cost_usd": 0.000829
+  },
+  {
+   "id": "E06",
+   "label": {
+    "language": "en",
+    "category": "bug",
+    "priority": "P2",
+    "action": "handoff"
+   },
+   "predicted": {
+    "language": "en",
+    "category": "bug",
+    "priority": "P2",
+    "action": "handoff"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": true,
+    "action": true,
+    "all": true
+   },
+   "route_reason": "not_covered",
+   "rule_flags": [],
+   "checks": null,
+   "judge_failed": null,
+   "error": null,
+   "tokens_in": 3783,
+   "tokens_out": 467,
+   "cost_usd": 0.000612
+  },
+  {
+   "id": "E07",
+   "label": {
+    "language": "nl",
+    "category": "billing",
+    "priority": "P4",
+    "action": "reply"
+   },
+   "predicted": {
+    "language": "nl",
+    "category": "question",
+    "priority": "P4",
+    "action": "handoff"
+   },
+   "pass": {
+    "language": true,
+    "category": false,
+    "priority": true,
+    "action": false,
+    "all": false
+   },
+   "route_reason": "checks_failed:model",
+   "rule_flags": [],
+   "checks": [
+    "model"
+   ],
+   "judge_failed": [
+    "supported_by_faq"
+   ],
+   "error": null,
+   "tokens_in": 5297,
+   "tokens_out": 1802,
+   "cost_usd": 0.001431
+  },
+  {
+   "id": "E08",
+   "label": {
+    "language": "nl",
+    "category": "other",
+    "priority": "P4",
+    "action": "close"
+   },
+   "predicted": {
+    "language": "nl",
+    "category": "other",
+    "priority": "P4",
+    "action": "close"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": true,
+    "action": true,
+    "all": true
+   },
+   "route_reason": "spam",
+   "rule_flags": [],
+   "checks": null,
+   "judge_failed": null,
+   "error": null,
+   "tokens_in": 3776,
+   "tokens_out": 194,
+   "cost_usd": 0.000475
+  },
+  {
+   "id": "E09",
+   "label": {
+    "language": "nl",
+    "category": "other",
+    "priority": "P2",
+    "action": "handoff"
+   },
+   "predicted": {
+    "language": "nl",
+    "category": "other",
+    "priority": "P2",
+    "action": "handoff"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": true,
+    "action": true,
+    "all": true
+   },
+   "route_reason": "rule:gdpr",
+   "rule_flags": [
+    "gdpr"
+   ],
+   "checks": null,
+   "judge_failed": null,
+   "error": null,
+   "tokens_in": 3789,
+   "tokens_out": 243,
+   "cost_usd": 0.0005
+  },
+  {
+   "id": "E10",
+   "label": {
+    "language": "nl",
+    "category": "question",
+    "priority": "P4",
+    "action": "reply"
+   },
+   "predicted": {
+    "language": "nl",
+    "category": "question",
+    "priority": "P4",
+    "action": "handoff"
+   },
+   "pass": {
+    "language": true,
+    "category": true,
+    "priority": true,
+    "action": false,
+    "all": false
+   },
+   "route_reason": "checks_failed:model",
+   "rule_flags": [],
+   "checks": [
+    "model"
+   ],
+   "judge_failed": [
+    "answers_the_question"
+   ],
+   "error": null,
+   "tokens_in": 4966,
+   "tokens_out": 473,
+   "cost_usd": 0.000733
+  }
+ ]
+}

@@ -1,0 +1,81 @@
+{
+ "date": "2026-11-18T18:32:29+00:00",
+ "git": "b1e6d1c",
+ "dirty": false,
+ "prompt_version": "f7694b1d",
+ "triage_model": "claude-haiku-5-5",
+ "check_model": "claude-haiku-5-5",
+ "entries": [
+  {
+   "id": "E01",
+   "language": "en",
+   "draft_reply": "Thank you for your message. The Roosterly app works on iOS 16 and later, and on Android 10 and later. Your iPhone runs iOS 15, which is below this minimum, so the app can crash on it. Please update your iPhone to iOS 16 or later and open the app again. Kind regards, Team Roosterly",
+   "draft_english": "Thank you for your message. The Roosterly app works on iOS 16 and later, and on Android 10 and later. Your iPhone runs iOS 15, which is below this minimum, so the app can crash on it. Please update your iPhone to iOS 16 or later and open the app again. Kind regards, Team Roosterly",
+   "back_translation": "Thank you for your message. The Roosterly app works on iOS 16 and later, and on Android 10 and later. Your iPhone runs iOS 15, which is below this minimum, so the app can crash on it. Please update your iPhone to iOS 16 or later and open the app again. Kind regards, Team Roosterly",
+   "judge_failed": [
+    "supported_by_faq"
+   ],
+   "judge_notes": [
+    "The FAQ says the app works on iOS 16 and later, but does not state that the app crashes on earlier iOS versions, so the claim that the app can crash on iOS 15 is not stated in the FAQ."
+   ]
+  },
+  {
+   "id": "E02",
+   "language": "nl",
+   "draft_reply": "Beste,\n\nBedankt voor uw bericht. U kunt het nieuwe btw-nummer zelf aanpassen onder Instellingen → Bedrijfsgegevens. Het wijzigt vanaf de volgende facturen.\n\nTeam Roosterly",
+   "draft_english": "Dear customer, / Thank you for your message. / You can change the new VAT number yourself under Instellingen → Bedrijfsgegevens (Settings → Company details). / It applies to future invoices. / Team Roosterly",
+   "back_translation": "Dear,\n\nThank you for your message. You can change the new VAT number yourself under Instellingen → Bedrijfsgegevens. It will apply from the next invoices.\n\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E04",
+   "language": "nl",
+   "draft_reply": "Hoi, je opent de dienst in de app en tikt op \"Ruil aanbieden\". Een collega met dezelfde functie kan de ruil dan accepteren. Daarna keurt je manager de ruil goed onder Rooster → Verzoeken. Succes!\n\nTeam Roosterly",
+   "draft_english": "Hi, you open the shift in the app and tap \"Ruil aanbieden\" (Offer swap). A colleague with the same role can then accept the swap. After that your manager approves the swap under Rooster → Verzoeken (Rota → Requests). Good luck!\n\nTeam Roosterly",
+   "back_translation": "Hi, you open the shift in the app and tap \"Ruil aanbieden\". A colleague with the same job can then accept the swap. After that, your manager approves the swap under Rooster → Verzoeken. Good luck!\n\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E05",
+   "language": "nl",
+   "draft_reply": "Bedankt voor je idee. We lezen elk verzoek en je kunt het op ons publieke roadmap bekijken en stemmen via roadmap.roosterly.nl. We kunnen helaas geen leverdatum toezeggen.\n\nTeam Roosterly",
+   "draft_english": "Thank you for your idea. We read every request, and you can view and vote on it on our public roadmap at roadmap.roosterly.nl. Unfortunately we cannot promise a delivery date.\n\nTeam Roosterly",
+   "back_translation": "Thank you for your idea. We read every request, and you can view and vote on it on our public roadmap at roadmap.roosterly.nl. Unfortunately, we cannot commit to a delivery date.\n\nTeam Roosterly",
+   "judge_failed": [
+    "answers_the_question"
+   ],
+   "judge_notes": [
+    "The customer asked for a Google Agenda integration; the reply treats it as an idea and points to the roadmap but does not state whether the integration exists or is available on the Plus plan.",
+    "Reply does not address the customer's specific request for a Google Agenda connection, so it does not answer the question fully."
+   ]
+  },
+  {
+   "id": "E07",
+   "language": "nl",
+   "draft_reply": "Goedendag,\n\nPlus kost €6 per actieve medewerker per maand, excl. btw. Voor 25 medewerkers komt dat neer op €150 per maand excl. btw, als alle 25 medewerkers actief zijn. Plus biedt onbeperkt vestigingen, API-toegang en de salarisintegraties met Nmbrs, Loket.nl en AFAS.\n\nTeam Roosterly",
+   "draft_english": "Hello,\n\nPlus costs €6 per active employee per month, excl. VAT. For 25 employees that comes to €150 per month excl. VAT, if all 25 employees are active. Plus includes unlimited locations, API access and the payroll integrations with Nmbrs, Loket.nl and AFAS.\n\nTeam Roosterly",
+   "back_translation": "Good day,\n\nPlus costs €6 per active employee per month, excl. VAT. For 25 employees, that comes to €150 per month excl. VAT, if all 25 employees are active. Plus offers unlimited locations, API access, and the salary integrations with Nmbrs, Loket.nl, and AFAS.\n\nTeam Roosterly",
+   "judge_failed": [
+    "supported_by_faq"
+   ],
+   "judge_notes": [
+    "The FAQ says Plus includes payroll integrations but does not name Nmbrs, Loket.nl or AFAS; naming these providers is an unsupported factual claim."
+   ]
+  },
+  {
+   "id": "E10",
+   "language": "nl",
+   "draft_reply": "Hoi, je kunt actuele storingen en gepland onderhoud zien op status.roosterly.nl. Team Roosterly",
+   "draft_english": "Hi, you can see current outages and planned maintenance at status.roosterly.nl. Team Roosterly",
+   "back_translation": "Hi, you can see current outages and scheduled maintenance at status.roosterly.nl. Team Roosterly",
+   "judge_failed": [
+    "answers_the_question"
+   ],
+   "judge_notes": [
+    "The customer asked whether maintenance is planned tonight; the reply points to the status page but does not say whether tonight's maintenance exists or when it is, and the FAQ does not provide that information."
+   ]
+  }
+ ]
+}
