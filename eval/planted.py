@@ -14,7 +14,8 @@ any check; a planted version that passes everything would have reached the custo
 count from the same runs, and show whether a pattern also fires on an honest back-translation.
 
 --code-only runs the code checks alone (no model call, no file). Results go to eval/results/planted-*.json, apart
-from the eval's score files. They hold back-translations and judge notes of these drafts, never ticket text.
+from the eval's score files. They hold back-translations and judge notes of these drafts; the rows never copy the
+ticket, but the judge's notes are free text from a call that saw it.
 Exit codes: 0 done, 2 setup error (see agent/run.py).
 """
 import argparse
