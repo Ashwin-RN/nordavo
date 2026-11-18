@@ -25,7 +25,7 @@ needs planted errors).
 
 | Example | Runs held | Judge's answer | Is the judge right? |
 |---|---|---|---|
-| E07 Plus for 25 employees | 3 of 3 | supported_by_faq: "the FAQ does not name Nmbrs, Loket.nl or AFAS" | **No.** F04 names all three. The judge sees only the entries the drafter cited (`faq_ids`), and its notes quote F05's wording ("the payroll integrations"), so F04 was not among them. Inferred: the eval rows do not record the cited ids |
+| E07 Plus for 25 employees | 3 of 3 | supported_by_faq: "the FAQ does not name Nmbrs, Loket.nl or AFAS" | **No.** F04 names all three. The judge sees only the entries the drafter cited (`faq_ids`). Measured afterwards (below): the drafter cites F05 alone |
 | E10 maintenance tonight? | 3 of 3 | answers_the_question (r3 also supported_by_faq, no_promises) | Strict. The FAQ cannot say whether there is maintenance tonight; pointing to status.roosterly.nl is the answer Nordavo labels as a reply. r3's "always the most recent information" is a small claim beyond F11 |
 | E01 iOS 15 crash (English) | 2 of 3 | supported_by_faq: "the FAQ does not say iOS 15 causes crashes" | Strict. The FAQ gives iOS 16 as the minimum; "most likely why it crashes" is an inference, and Nordavo labels it a reply |
 | E05 r2 Google Agenda idea | 1 of 3 | answers_the_question | Strict, and inconsistent: the same reply passed in r1 and r3 |
@@ -42,4 +42,21 @@ so the back-translation and the judge pass them by design. Catching these needs 
 - The translation step works on these drafts: 15 of 15 faithful.
 - Every reply lost in the baseline was lost to the judge, never to the translation, and in E07 the judge was wrong
   because it was not shown the FAQ entry the draft used.
-- The one reliable, repeatable loss is E07 (3 of 3, one cause): the fix candidate for the eval.
+- E07 is the loss with one known cause: the fix candidate for the eval.
+
+## Follow-up: E07 alone, 3 more runs at the same agent code (after bad3ed3, which records the cited ids)
+
+`git diff b1e6d1c..HEAD -- agent/` is empty, so these count as "before" data. Ids and codes only:
+
+| Run | Action | Cited `faq_ids` | Judge said no to |
+|---|---|---|---|
+| 1 | reply | F05 | nothing |
+| 2 | reply | F05 | nothing |
+| 3 | handoff | F05 | supported_by_faq |
+
+- F04 cited in 0 of 3: the cause is now measured, not inferred.
+- E07 held in 4 of 6 runs in all (3 of 3 in the baseline, 1 of 3 here), so the judge is noisy on it and a
+  reply count alone cannot show a fix worked. The after-run is read on the mechanism: is F04 cited?
+- Not checked: whether the two drafts that passed named Nmbrs, Loket.nl or AFAS. If they did, the judge passed
+  facts it was never shown.
+- Cost: 0.003865 USD.

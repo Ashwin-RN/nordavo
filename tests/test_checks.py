@@ -1,4 +1,6 @@
 """Code checks on reply drafts. Drafts are from a trial run on the examples (E-ids) or invented (marked)."""
+import re
+
 import pytest
 
 from agent import checks, decide, run
@@ -119,6 +121,15 @@ def test_the_back_translation_sees_only_the_draft(monkeypatch):
     judge_message = judged["messages"][0]["content"]                 # the judge gets both readings, side by side
     assert "<independent_translation>\nBACK-TRANSLATION\n</independent_translation>" in judge_message
     assert f"<drafting_assistant_english>\n{PLAN_DRAFT['draft_english']}\n" in judge_message
+
+
+def test_the_judge_is_shown_every_cited_entry_and_no_other(monkeypatch):
+    # the judge's supported_by_faq is only as good as the entries it sees: a fact from an uncited entry looks invented
+    client = FakeClient(create=[text_reply("BACK-TRANSLATION")], parse=[parsed(judge(True))])
+    monkeypatch.setattr(decide, "_client", client)
+    checks.check_reply({**PLAN_DRAFT, "faq_ids": ["F04", "F05"]}, "Plus\nWat kost Plus?", "Basis")
+    shown = re.findall(r"^## (F\d\d)\b", client.requests[1]["messages"][0]["content"], re.MULTILINE)
+    assert shown == ["F04", "F05"]
 
 
 def test_reading_keeps_the_three_texts_as_checked(monkeypatch):  # for the eval's translations file only
