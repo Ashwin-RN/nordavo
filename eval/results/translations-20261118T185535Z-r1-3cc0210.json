@@ -1,0 +1,55 @@
+{
+ "date": "2026-11-18T18:55:35+00:00",
+ "git": "3cc0210",
+ "dirty": false,
+ "prompt_version": "5f2ce683",
+ "triage_model": "claude-haiku-5-5",
+ "check_model": "claude-haiku-5-5",
+ "entries": [
+  {
+   "id": "E02",
+   "language": "nl",
+   "draft_reply": "Beste, U kunt uw nieuwe btw-nummer zelf aanpassen onder Instellingen → Bedrijfsgegevens. Het nieuwe nummer wordt dan gebruikt op toekomstige facturen. Met vriendelijke groet, Team Roosterly",
+   "draft_english": "Hello, you can change your new VAT number yourself under Settings → Company details (Instellingen → Bedrijfsgegevens). The new number is then used on future invoices. Kind regards, Team Roosterly.",
+   "back_translation": "Dear, you can update your new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices. Kind regards, Team Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E04",
+   "language": "nl",
+   "draft_reply": "Hoi, een dienst ruil je via de app: open de dienst en tik op \"Ruil aanbieden\". Een collega met dezelfde functie kan de ruil dan accepteren. Daarna keurt je manager de ruil goed onder Rooster → Verzoeken. Team Roosterly",
+   "draft_english": "Hi, you swap a shift in the app: open the shift and tap \"Offer swap\" (Ruil aanbieden). A colleague with the same role can then accept the swap. After that, your manager approves the swap under Rota → Requests (Rooster → Verzoeken). Team Roosterly",
+   "back_translation": "Hi, you swap a shift via the app: open the shift and tap \"Ruil aanbieden\". A colleague with the same function can then accept the swap. After that, your manager approves the swap under Rooster → Verzoeken. Team Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E05",
+   "language": "nl",
+   "draft_reply": "Bedankt voor uw suggestie voor een koppeling met Google Agenda. We lezen elke idee en plaatsen verzoeken op onze openbare roadmap op roadmap.roosterly.nl, waar u op ideeën kunt stemmen. We kunnen helaas geen leverdatum toezeggen.\n\nTeam Roosterly",
+   "draft_english": "Thank you for your suggestion for a Google Calendar integration. We read every idea and post requests on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. We cannot promise a delivery date.\n\nTeam Roosterly",
+   "back_translation": "Thank you for your suggestion for an integration with Google Calendar. We read every idea and post requests on our public roadmap at roadmap.roosterly.nl, where you can vote on ideas. Unfortunately, we cannot promise a delivery date.\n\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E07",
+   "language": "nl",
+   "draft_reply": "Hallo, Plus kost €6 per actieve medewerker per maand, dus voor 25 medewerkers komt dat neer op €150 per maand (excl. btw). U kunt upgraden via Instellingen → Abonnement; de nieuwe prijs geldt vanaf de volgende factuur. Team Roosterly",
+   "draft_english": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Settings → Subscription; the new price applies from the next invoice. Team Roosterly",
+   "back_translation": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Instellingen → Abonnement; the new price applies from the next invoice. Team Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E10",
+   "language": "nl",
+   "draft_reply": "Hoi, actuele storingen en gepland onderhoud vind je op status.roosterly.nl. Daar zie je meteen of er vanavond iets gepland staat.\n\nTeam Roosterly",
+   "draft_english": "Hi, current outages and planned maintenance can be found at status.roosterly.nl. There you can see right away whether anything is planned for tonight.\n\nTeam Roosterly",
+   "back_translation": "Hi, current outages and scheduled maintenance can be found at status.roosterly.nl. There you can see right away whether anything is planned for tonight.\n\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  }
+ ]
+}

@@ -1,0 +1,68 @@
+{
+ "date": "2026-11-18T18:57:18+00:00",
+ "git": "3cc0210",
+ "dirty": false,
+ "prompt_version": "5f2ce683",
+ "triage_model": "claude-haiku-5-5",
+ "check_model": "claude-haiku-5-5",
+ "entries": [
+  {
+   "id": "E01",
+   "language": "en",
+   "draft_reply": "Hello,\n\nThe Roosterly app requires iOS 16 or later. Your iPhone 8 is running iOS 15, which is below that minimum, so this is likely why the app crashes at startup. Please update iOS to version 16 or later and try again.\n\nTeam Roosterly",
+   "draft_english": "Hello,\n\nThe Roosterly app requires iOS 16 or later. Your iPhone 8 is running iOS 15, which is below that minimum, so this is likely why the app crashes at startup. Please update iOS to version 16 or later and try again.\n\nTeam Roosterly",
+   "back_translation": "Hello,\n\nThe Roosterly app requires iOS 16 or later. Your iPhone 8 is running iOS 15, which is below that minimum, so this is likely why the app crashes at startup. Please update iOS to version 16 or later and try again.\n\nTeam Roosterly",
+   "judge_failed": [
+    "supported_by_faq"
+   ],
+   "judge_notes": [
+    "The FAQ says the app works on iOS 16 and later, but it does not say that iOS 15 causes startup crashes, so the claim that this is likely why the app crashes is not stated in the FAQ."
+   ]
+  },
+  {
+   "id": "E02",
+   "language": "nl",
+   "draft_reply": "Goedendag,\n\nU kunt het nieuwe btw-nummer zelf aanpassen onder Instellingen → Bedrijfsgegevens. Het nieuwe nummer wordt daarna op toekomstige facturen gebruikt.\n\nMet vriendelijke groet,\nTeam Roosterly",
+   "draft_english": "Hello, you can change the VAT number yourself under Instellingen → Bedrijfsgegevens (Settings → Company details). The new number is then used on future invoices. Kind regards, Team Roosterly.",
+   "back_translation": "Good day,\n\nYou can change the new VAT number yourself under Instellingen → Bedrijfsgegevens. The new number will then be used on future invoices.\n\nKind regards,\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E04",
+   "language": "nl",
+   "draft_reply": "Hoi, je open de dienst in de app en tikt op \"Ruil aanbieden\". Een collega met dezelfde functie kan de ruil accepteren. Daarna keurt je manager de ruil goed onder Rooster → Verzoeken. Lukt het niet? Laat het ons weten.\n\nTeam Roosterly",
+   "draft_english": "Hi, open the shift in the app and tap \"Ruil aanbieden\" (Offer swap). A colleague with the same role can accept the swap. Then your manager approves the swap under Rooster → Verzoeken (Rota → Requests). If it doesn't work, let us know.\n\nTeam Roosterly",
+   "back_translation": "Hi, you open the shift in the app and tap \"Ruil aanbieden\". A colleague with the same job can accept the swap. Then your manager approves the swap under Rooster → Verzoeken. Doesn't work? Let us know.\n\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E05",
+   "language": "nl",
+   "draft_reply": "Beste, bedankt voor uw idee voor een koppeling met Google Agenda. Wij lezen elk idee. U kunt de voortgang volgen en op ideeën stemmen op roadmap.roosterly.nl. Helaas kunnen wij voor individuele verzoeken geen leveringsdatum toezeggen.\nTeam Roosterly",
+   "draft_english": "Dear customer, thank you for your idea for a Google Calendar integration. We read every idea. You can follow progress and vote on ideas at roadmap.roosterly.nl. Unfortunately we cannot promise a delivery date for individual requests.\nTeam Roosterly",
+   "back_translation": "Dear, thank you for your idea for an integration with Google Calendar. We read every idea. You can follow the progress and vote on ideas at roadmap.roosterly.nl. Unfortunately, we cannot commit to a delivery date for individual requests.\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E07",
+   "language": "nl",
+   "draft_reply": "Hoi, Plus kost €6 per actieve medewerker per maand, excl. btw. Voor 25 medewerkers komt dat neer op €150 per maand excl. btw. Je kunt upgraden wanneer je wilt via Instellingen → Abonnement; de nieuwe prijs geldt vanaf de volgende factuur.\n\nTeam Roosterly",
+   "draft_english": "Hi, Plus costs €6 per active employee per month, excluding VAT. For 25 employees that comes to €150 per month excluding VAT. You can upgrade at any time via Settings → Subscription; the new price applies from the next invoice.\n\nTeam Roosterly",
+   "back_translation": "Hi, Plus costs €6 per active employee per month, excl. VAT. For 25 employees, that comes to €150 per month excl. VAT. You can upgrade whenever you like via Instellingen → Abonnement; the new price applies from the next invoice.\n\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  },
+  {
+   "id": "E10",
+   "language": "nl",
+   "draft_reply": "Hoi, je vindt actuele storingen en gepland onderhoud op status.roosterly.nl. Daar staat altijd de meest recente informatie.\n\nTeam Roosterly",
+   "draft_english": "Hi, you can find current outages and planned maintenance at status.roosterly.nl. That page always has the most recent information.\n\nTeam Roosterly",
+   "back_translation": "Hi, you can find current outages and planned maintenance at status.roosterly.nl. The most recent information is always posted there.\n\nTeam Roosterly",
+   "judge_failed": [],
+   "judge_notes": []
+  }
+ ]
+}
