@@ -1,0 +1,46 @@
+"""Settings: a fresh clone fails fast with a clear message, and a blank line in .env means the default."""
+import os
+
+import pytest
+
+from agent import config, run
+
+ALL = {"HELPDESK_URL": "https://fake.test", "HELPDESK_KEY": "k", "CANDIDATE_EMAIL": "me@example.com",
+       "ANTHROPIC_API_KEY": "fake-key"}
+
+
+@pytest.fixture
+def env(monkeypatch):
+    monkeypatch.setattr(config, "load_dotenv", lambda: None)  # never read the real .env
+    for name, value in ALL.items():
+        monkeypatch.setenv(name, value)
+    return monkeypatch
+
+
+def test_missing_anthropic_key_is_one_clear_line(env):
+    env.delenv("ANTHROPIC_API_KEY")
+    with pytest.raises(SystemExit) as stop:
+        config.load_config()
+    assert "ANTHROPIC_API_KEY" in str(stop.value) and "\n" not in str(stop.value)
+
+
+def test_all_set_loads(env):
+    assert config.load_config().helpdesk_url == "https://fake.test"
+
+
+@pytest.mark.parametrize("value, expected", [(None, "default"), ("", "default"), ("set", "set")])
+def test_blank_setting_means_default(env, value, expected):
+    if value is None:
+        env.delenv("SOME_SETTING", raising=False)
+    else:
+        env.setenv("SOME_SETTING", value)
+    assert config.setting("SOME_SETTING", "default") == expected
+
+
+def test_missing_config_leaves_no_lock(env, tmp_path):
+    env.chdir(tmp_path)
+    env.delenv("ANTHROPIC_API_KEY")
+    env.setattr(run, "Helpdesk", lambda cfg: pytest.fail("reached the helpdesk"))
+    with pytest.raises(SystemExit):
+        run.main([])
+    assert not os.path.exists(run.LOCK)

@@ -8,14 +8,14 @@ First match wins:
   5. model confidence below MIN_REPLY_CONFIDENCE          -> handoff
   6. otherwise                             -> reply candidate (checks.py checks it before it is sent)
 """
-import os
 import re
 
+from agent.config import setting
 from agent.rules import PAYMENT_KINDS, priority_floor
 
 # Below this self-reported confidence a reply goes to a human instead. The model's confidence is a
 # weak signal on its own, so it is one gate among several, not the main one.
-MIN_REPLY_CONFIDENCE = float(os.environ.get("MIN_REPLY_CONFIDENCE", "0.7"))
+MIN_REPLY_CONFIDENCE = float(setting("MIN_REPLY_CONFIDENCE", "0.7"))
 
 KNOWN_FAQ_IDS = None  # filled on first use from faq.md headings
 

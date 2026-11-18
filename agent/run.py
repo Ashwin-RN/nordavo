@@ -153,9 +153,10 @@ def main(argv=None):
     ap.add_argument("--show", action="store_true", help="print each decision and draft to the screen (not the log)")
     args = ap.parse_args(argv)
 
+    cfg = load_config()                                     # before the lock: a missing key leaves nothing behind
     take_lock()
 
-    hd = Helpdesk(load_config())
+    hd = Helpdesk(cfg)
     log = RunLog()
     try:
         status = hd.status()

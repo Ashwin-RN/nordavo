@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from dotenv import load_dotenv
 
-REQUIRED = ("HELPDESK_URL", "HELPDESK_KEY", "CANDIDATE_EMAIL")
+REQUIRED = ("HELPDESK_URL", "HELPDESK_KEY", "CANDIDATE_EMAIL", "ANTHROPIC_API_KEY")
 
 
 @dataclass(frozen=True)
@@ -12,6 +12,11 @@ class Config:
     helpdesk_url: str
     helpdesk_key: str
     candidate_email: str
+
+
+def setting(name, default):
+    """An optional setting. A blank line in .env (NAME=) means the default, not an empty value."""
+    return os.environ.get(name) or default
 
 
 def load_config() -> Config:

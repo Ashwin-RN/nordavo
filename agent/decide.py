@@ -3,7 +3,6 @@
 The model sees the masked ticket, the FAQ and the client's rules. It returns one structured
 object (Proposal). It never posts anything itself and has no tools.
 """
-import os
 import time
 from pathlib import Path
 from typing import List, Literal
@@ -12,14 +11,16 @@ import anthropic
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ValidationError
 
+from agent.config import setting
+
 load_dotenv()
 
 FAQ_PATH = Path(__file__).resolve().parent.parent / "candidate_pack" / "faq.md"
 FAQ_TEXT = FAQ_PATH.read_text(encoding="utf-8")
 
-MODEL = os.environ.get("TRIAGE_MODEL", "claude-haiku-5-5")
-EFFORT = os.environ.get("TRIAGE_EFFORT", "medium")
-CHECK_MODEL = os.environ.get("CHECK_MODEL", MODEL)
+MODEL = setting("TRIAGE_MODEL", "claude-haiku-5-5")
+EFFORT = setting("TRIAGE_EFFORT", "medium")
+CHECK_MODEL = setting("CHECK_MODEL", MODEL)
 
 # USD per million tokens (input, output). Used for the cost line in the log.
 PRICES = {"claude-haiku-5-5": (0.10, 0.50), "claude-sonnet-5-5": (2.00, 10.00), "claude-opus-5-5": (4.00, 20.00)}

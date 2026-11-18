@@ -12,6 +12,7 @@ The README's "Decisions" and "What I would improve" sections are written from th
 | Work in Dutch directly, with an English version of each reply alongside | Translating first loses the exact Dutch menu names customers see | We need checks that do not depend on reading Dutch |
 | Claude Haiku 5.5 | Cheap enough to stay far under the €1 budget, good enough on the examples | A stronger model might score higher; the model is one setting to change |
 | Python | Simple, and the reviewer can read it | None worth noting |
+| Exact versions in `requirements.txt`; settings checked before the run starts, a blank setting means its default | A fresh clone installs what was tested; a missing key is one clear line, not a crash mid-run | Updating a library is a deliberate edit |
 
 ## Talking to the helpdesk
 
