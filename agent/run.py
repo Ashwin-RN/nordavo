@@ -167,7 +167,8 @@ def main(argv=None):
         print("model setup ok")
 
         tickets = [hd.get_ticket(args.ticket)] if args.ticket else list(hd.open_tickets())
-        tickets = [t for t in tickets if not t.get("handled")][: args.limit]
+        # a dry run may re-check a handled ticket (to see its draft again); a live run never touches one
+        tickets = [t for t in tickets if args.dry_run or not t.get("handled")][: args.limit]
         failed, streak, done = [], 0, 0                    # streak: model failures in a row, both passes
         for t in tickets:
             try:

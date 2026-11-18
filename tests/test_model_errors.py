@@ -133,3 +133,19 @@ def test_count_carries_into_the_second_pass(monkeypatch, tmp_path):
     hd = runner(monkeypatch, tmp_path, client, tickets("T01", "T02", "T03"))
     assert run.main([]) == 1
     assert hd.posts == [("T02", "close"), ("T01", "handoff")]  # T03 tripped the breaker: nothing posted
+
+
+# ---- re-checking one handled ticket (to see its draft again with --show)
+
+def test_dry_run_rechecks_a_handled_ticket(monkeypatch, tmp_path):
+    client = FakeClient(create=["ok"], parse=[parsed(SPAM)])
+    hd = runner(monkeypatch, tmp_path, client, [{**TICKET, "handled": True}])
+    assert run.main(["--dry-run", "--ticket", "T900"]) == 0
+    assert [k for k, _ in client.calls] == ["create", "parse"] and hd.posts == []
+
+
+def test_live_run_skips_a_handled_ticket(monkeypatch, tmp_path):
+    client = FakeClient(create=["ok"])
+    hd = runner(monkeypatch, tmp_path, client, [{**TICKET, "handled": True}])
+    assert run.main(["--ticket", "T900"]) == 0
+    assert [k for k, _ in client.calls] == ["create"] and hd.posts == []
