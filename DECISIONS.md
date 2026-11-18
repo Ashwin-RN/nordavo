@@ -8,7 +8,7 @@ The README's "Decisions" and "What I would improve" sections are written from th
 | Decision | Why | What it costs |
 |---|---|---|
 | The model proposes, code decides | A model can be talked into things by a ticket; code cannot. Every safety rule lives in code. | More code to write and test |
-| One model call per ticket for triage | Small and easy to explain. Replies get two more calls to check them. | Replies cost about 3x a handoff |
+| One model call per ticket for triage | Small and easy to explain. Replies get two more calls to check them. | A reply costs about 1.35x a handoff (measured over 21 replies: triage $0.00078, back-translation $0.00008, judge $0.00019) |
 | Work in Dutch directly, with an English version of each reply alongside | Translating first loses the exact Dutch menu names customers see | We need checks that do not depend on reading Dutch |
 | Claude Haiku 5.5 | Cheap enough to stay far under the €1 budget, good enough on the examples | A stronger model might score higher; the model is one setting to change |
 | Python | Simple, and the reviewer can read it | None worth noting |
@@ -62,3 +62,5 @@ The API reference says what each error means. These are the choices it leaves op
 | Keywords miss typos ("refnud") | The model reads meaning and catches them; fuzzy matching would flood humans with false alarms | Test typo tickets in the eval and measure |
 | Keywords can be dodged with invisible characters, look-alike letters or spaced-out words | Dodging them wins little: the agent cannot move money, and every reply must pass the FAQ checks | Strip invisible characters and map look-alike letters before matching |
 | A card number split by line breaks or dots is not masked | Rare in real tickets | Widen the separators the masking accepts |
+| The same model writes the reply and checks it | Keeps one vendor and one setting; the check model is already a separate setting (`CHECK_MODEL`) | Measure how often the judge agrees with Nordavo's labels; try a stronger model for the judge only (Sonnet costs about 20x Haiku, still about 12 cents per 100 tickets for judging) |
+| Back-translation uses the same model family as the drafter | Costs a hundredth of a cent per reply; a second vendor adds a key, a failure mode and another place customer text goes | Back-translate with a different engine (e.g. DeepL) for independence, log how often it disagrees with the drafter's English, and turn disagreements into eval cases |
