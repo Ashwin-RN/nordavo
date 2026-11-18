@@ -37,9 +37,21 @@ _STOPWORDS = {
 }
 
 
+# Quoted text: "..." or “...”, or '...' or ‘...’. A single quote is an apostrophe, not a quote, when it sits
+# inside a word (don't, you'll, foto's, zo'n) or starts a one-letter word ('s avonds, 't): an opening quote has
+# no letter before it and no one-letter word after it, a closing one no letter after it.
+_QUOTE = r"[\"“]([^\"”]{{{n}}})[\"”]|(?<!\w)['‘](?!\w\b)([^\n]{{{n}}}?)['’](?!\w)"
+_QUOTED_LABEL = re.compile(_QUOTE.format(n="2,40"))  # the limit inside: a stray mark cannot swallow a real label
+_QUOTED_ANY = re.compile(_QUOTE.format(n="1,"))       # for language detection: long quoted messages too
+
+
+def _quoted_labels(text):
+    return [m.group(1) or m.group(2) for m in _QUOTED_LABEL.finditer(text)]
+
+
 def detect_language(text):
     """Best guess among nl, en, de by counting common words. None if there is too little to tell."""
-    text = re.sub(r"[\"'“”‘’].*?[\"'“”‘’]", " ", text)        # quoted UI labels are Dutch in every language
+    text = _QUOTED_ANY.sub(" ", text)                           # quoted UI labels are Dutch in every language
     text = re.sub(r"\([^)]*\)", " ", text)                      # bracketed English glosses
     words = re.findall(r"[a-zäöüßéëï]+", text.lower())
     scores = {lang: sum(w in sw for w in words) for lang, sw in _STOPWORDS.items()}
@@ -67,7 +79,7 @@ _FAQ_LOWER = FAQ.lower()
 def bad_labels(draft):
     """Menu names next to an arrow, or quoted, that the FAQ does not contain exactly."""
     problems = [w for w in _arrow_words(draft) if w and w.lower() not in _FAQ_MENU_WORDS]
-    for quoted in re.findall(r"[\"“'‘]([^\"”'’]{2,40})[\"”'’]", draft):
+    for quoted in _quoted_labels(draft):
         if len(quoted.split()) <= 5 and quoted.lower() not in _FAQ_LOWER:
             problems.append(quoted)
     return problems
