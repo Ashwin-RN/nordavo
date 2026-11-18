@@ -37,7 +37,7 @@ class Proposal(BaseModel):
     priority_reason: str = Field(description="One English sentence: why this category and priority.")
     rule_flags: List[Flag] = Field(description="Every always-a-human topic present. Empty list if none.")
     is_spam: bool = Field(description="Unsolicited marketing, scams or messages unrelated to Roosterly.")
-    faq_ids: List[str] = Field(description="FAQ entries (e.g. F06) the reply relies on. Empty if none fit.")
+    faq_ids: List[str] = Field(description="Every FAQ entry (e.g. F06) a fact in the reply comes from. Empty if none fit.")
     fully_covered: bool = Field(description="True only if the FAQ answers every question in the ticket.")
     handoff_note: str = Field(description="English note for a support agent. Always written.")
     draft_reply: str = Field(description="Reply in the customer's language, or empty string if not fully covered.")
@@ -86,6 +86,8 @@ fully_covered is false. When unsure, false.
 ## Writing the draft_reply (only when fully_covered)
 - Write in the customer's language. Mirror their tone: "je" if they write informally, "u" if formal.
 - Use only facts from the FAQ. No promises, no dates, no apologies for things not stated.
+- List in faq_ids every FAQ entry that a fact in the draft comes from. The reply is checked against
+  those entries only, so a fact from an entry you did not list counts as invented.
 - Copy menu names exactly as the FAQ writes them in Dutch, e.g. Instellingen → Abonnement → Facturen.
   In English or German replies, give the Dutch label with its English meaning in brackets.
 - Greet the customer by first name if they signed with one. Sign off as "Team Roosterly".
