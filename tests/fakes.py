@@ -1,4 +1,6 @@
 """Fakes for tests: an Anthropic client and a helpdesk. No network, no real tickets touched."""
+from types import SimpleNamespace
+
 import anthropic
 import httpx2  # the SDK's own HTTP library; its errors carry these objects
 
@@ -16,6 +18,12 @@ def connection_error():
 
 def timeout_error():
     return anthropic.APITimeoutError(request=_REQUEST)
+
+
+def parsed(proposal):
+    """A successful messages.parse response carrying this proposal."""
+    usage = SimpleNamespace(input_tokens=1, output_tokens=1)
+    return SimpleNamespace(stop_reason="end_turn", parsed_output=proposal, usage=usage)
 
 
 class FakeClient:

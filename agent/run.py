@@ -21,6 +21,7 @@ from agent.rules import hard_rule_hits, is_empty, mask
 from agent.runlog import RunLog
 
 LOCK = ".run.lock"
+MODEL_FAILURE_LIMIT = 3   # model failures in a row before the run stops (the model is down, not one ticket)
 
 
 def decide_ticket(ticket):
@@ -99,6 +100,13 @@ def handle(hd, log, ticket, dry_run, decision=None, extra=None, verbose=False):
     return outcome
 
 
+def model_down(error, left_open):
+    """The circuit breaker tripped: stop, post no fallback handoffs, leave the rest open. Exit 1."""
+    print(f"stopped: the model failed {MODEL_FAILURE_LIMIT} tickets in a row (last: {error}). No fallback "
+          f"handoffs were posted; {left_open} tickets stay open. Run again later.", file=sys.stderr)
+    return 1
+
+
 def _pid_alive(pid):
     if os.name == "nt":
         import ctypes
@@ -158,22 +166,33 @@ def main(argv=None):
 
         tickets = [hd.get_ticket(args.ticket)] if args.ticket else list(hd.open_tickets())
         tickets = [t for t in tickets if not t.get("handled")][: args.limit]
-        failed = []
+        failed, streak, done = [], 0, 0                    # streak: model failures in a row, both passes
         for t in tickets:
             try:
                 outcome = handle(hd, log, t, args.dry_run, verbose=args.show)
             except ModelFailed as e:
                 failed.append((t, str(e)))
+                streak += 1
                 print(f"{t['id']}: model failed ({e}); will retry once at the end")
+                if streak >= MODEL_FAILURE_LIMIT:
+                    return model_down(e, len(tickets) - done)
                 continue
+            done += 1
+            if not is_empty(t):                             # an empty ticket made no model call
+                streak = 0
             print(f"{t['id']}: {outcome}")
 
         for t, first_error in failed:                       # pass 2
             try:
                 outcome = handle(hd, log, t, args.dry_run, verbose=args.show)
+                streak = 0
             except ModelFailed as e:
+                streak += 1
+                if streak >= MODEL_FAILURE_LIMIT:           # the model is down: no fallback for this one
+                    return model_down(e, len(tickets) - done)
                 d = fallback_decision(t, e)
                 outcome = handle(hd, log, t, args.dry_run, decision=d, extra={"model_calls": []}, verbose=args.show)
+            done += 1
             print(f"{t['id']}: {outcome} (second pass)")
 
         if args.dry_run or args.ticket or args.limit:
