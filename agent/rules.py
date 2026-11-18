@@ -104,7 +104,10 @@ def is_empty(ticket):
 # Bias: over-mask. A wrongly masked number costs a human a second look;
 # a leaked card number breaks a client rule.
 _LONG_NUMBER = re.compile(r"(?<!\d)(?:\d[ -]?){12,18}\d(?!\d)")          # 13 to 19 digits
-_IBAN = re.compile(r"\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]){11,30}\b", re.IGNORECASE)
+# An IBAN never starts on a Dutch VAT number (btw-nummer NL123456789B01): it is public, not a payment detail.
+# A space after the country code ("NL 91 ABNA ...") only in capitals: "om 06 12345678" is a phone number.
+_IBAN = re.compile(r"\b(?!NL\d{9}B\d{2}\b)(?:(?-i:[A-Z]{2}) |[A-Z]{2})\d{2}(?:[ ]?[A-Z0-9]){11,30}\b", re.IGNORECASE)
+_NL_VAT = re.compile(r"NL\d{9}B\d{2}", re.IGNORECASE)                    # the same, written with spaces
 _CVC = re.compile(r"\b(cvc|cvv|cvc2|cvv2|security code|beveiligingscode|prufziffer)\b\W{0,3}\d{3,4}", re.IGNORECASE)
 _EXPIRY = re.compile(r"(?<!\d)(0[1-9]|1[0-2])\s?/\s?(\d{2}|20\d{2})(?!\d)")
 
@@ -139,10 +142,17 @@ def mask(text):
         return text, found
 
     def iban(m):
-        if not re.search(r"\d{6,}", m.group().replace(" ", "")):
-            return m.group()  # letters-and-few-digits: a word, not an account number
-        found.add("iban" if _iban_ok(m.group()) else "iban_like")
-        return "[IBAN REMOVED]"
+        # The pattern lets a space join the next word ("NL91ABNA0417164300 overmaken"): give back trailing words
+        # with no digit (they hide nothing), then judge what is left as if they were not there.
+        raw = m.group()
+        core = re.sub(r"(?: [A-Z]+)+$", "", raw, flags=re.IGNORECASE)
+        compact = core.replace(" ", "")
+        if _NL_VAT.fullmatch(compact):
+            return raw  # a Dutch VAT number (btw-nummer) is public, not a payment detail
+        if not re.search(r"\d{6,}", compact):
+            return raw  # letters-and-few-digits: a word, not an account number
+        found.add("iban" if _iban_ok(core) else "iban_like")
+        return "[IBAN REMOVED]" + raw[len(core):]
 
     def card(m):
         digits = re.sub(r"\D", "", m.group())

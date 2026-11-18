@@ -18,6 +18,48 @@ def test_iban_removed():  # invented
     assert "0417" not in masked and "iban" in kinds
 
 
+@pytest.mark.parametrize("text", [  # invented: a Dutch VAT number (NL + 9 digits + B + 2 digits) is not an IBAN
+    "Ons btw-nummer is NL123456789B01, klopt de factuur?",
+    "NL123456789B01 is ons btw-nummer.",            # the words after it once joined the match
+    "Ons btw-nummer is NL123456789B01 en de factuur van 312 euro klopt niet",  # a number in the words after it
+])
+def test_vat_number_kept(text):
+    assert mask(text) == (text, set())
+
+
+@pytest.mark.parametrize("text", [  # invented: the words after an IBAN are not part of it
+    "Graag op NL91ABNA0417164300 overmaken, dank.",
+    "Graag op NL91 ABNA 0417 1643 00 overmaken, dank.",
+])
+def test_words_after_an_iban_are_kept(text):
+    masked, kinds = mask(text)
+    assert masked == "Graag op [IBAN REMOVED] overmaken, dank." and kinds == {"iban"}
+
+
+def test_iban_with_odd_spacing_still_removed():  # invented: spacing does not decide masking
+    masked, kinds = mask("Rekening NL91 ABNA 041716 4300 graag")
+    assert "4300" not in masked and "0417" not in masked and "iban" in kinds
+
+
+@pytest.mark.parametrize("text", [  # invented: a space after the country code ("NL 91")
+    "Graag op NL 91 ABNA 0417 1643 00, dank.",
+    "NL123456789B01 NL 91 ABNA 0417 1643 00",      # right after a VAT number: once masked only by accident
+])
+def test_iban_with_a_space_in_the_prefix_removed(text):
+    masked, kinds = mask(text)
+    assert "0417" not in masked and "iban" in kinds
+
+
+def test_phone_number_after_a_word_kept():  # invented: "om 06 ..." is not a country code and check digits
+    text = "Kunt u mij bellen om 06 12345678 te bevestigen?"
+    assert mask(text) == (text, set())
+
+
+def test_handing_back_words_never_unmasks_digits():  # found by fuzzing old against new mask (garbled spacing)
+    masked, kinds = mask("ons NL 91AB NA041716 430 0 rekening")
+    assert "041716" not in masked and masked.endswith(" rekening") and kinds & {"iban", "iban_like"}
+
+
 def test_mistyped_card_still_removed():  # invented: fails Luhn, still masked
     masked, kinds = mask("kaart 4111 1111 1111 1112")
     assert "1112" not in masked and "long_number" in kinds
