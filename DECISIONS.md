@@ -44,6 +44,7 @@ The API reference says what each error means. These are the choices it leaves op
 | Decision | Why | What it costs |
 |---|---|---|
 | One run at a time, enforced by a lock file holding the run's process number; a lock whose process is dead is taken over | Two runs at once could answer the same ticket twice. Asking the operating system whether the process is alive needs no timer, so a slow but healthy run never loses its lock. | Works on one machine only; several machines need a shared lock with an expiry and a heartbeat |
+| A tiny model call per model at start-up, after the helpdesk status and before any ticket is fetched, on every run including dry runs | A bad key or model name stops the run before any ticket is touched; a dry run with nothing open still proves the setup | One extra call per model per run, well under a hundredth of a cent |
 | `--dry-run` posts nothing; `--show` prints drafts to the screen, never the log | Drafts can contain names, and the logs are committed | None |
 | Exit codes: 0 done, 1 run again, 2 fix the cause first | A scheduler or a person can tell "try later" from "something is wrong" | None |
 | Tickets one at a time, not in parallel | 30 tickets take 2 to 3 minutes; running in order keeps crash recovery and the log simple | Slower on a large backlog (see gaps) |

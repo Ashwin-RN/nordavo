@@ -146,6 +146,14 @@ def _call(method, **kwargs):
         raise ModelFailed("model output did not fit the form") from e
 
 
+def check_setup():
+    """One tiny call per model, before any ticket is touched: proves the key, the permission, the
+    model names and the effort setting. Raises ModelSetupError or ModelFailed; the reply is not read."""
+    for model in dict.fromkeys((MODEL, CHECK_MODEL)):     # each distinct model once, in order
+        _call(_get_client().messages.create, model=model, max_tokens=16, output_config={"effort": EFFORT},
+              messages=[{"role": "user", "content": "Reply with OK."}])
+
+
 def call_usage(model, usage, started):
     p_in, p_out = PRICES.get(model, (0.0, 0.0))
     cost = (usage.input_tokens * p_in + usage.output_tokens * p_out) / 1_000_000

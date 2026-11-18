@@ -14,7 +14,7 @@ import time
 
 from agent.checks import check_reply, detect_language
 from agent.config import load_config
-from agent.decide import ModelFailed, ModelSetupError, propose
+from agent.decide import ModelFailed, ModelSetupError, check_setup, propose
 from agent.helpdesk import AlreadyHandled, Helpdesk, HelpdeskError, Unavailable
 from agent.route import empty_decision, route
 from agent.rules import hard_rule_hits, is_empty, mask
@@ -153,6 +153,8 @@ def main(argv=None):
         status = hd.status()
         print(f"mode={status['mode']} open={status['open_tickets']} handled={status['handled_tickets']} "
               f"log={log.path}{' DRY RUN' if args.dry_run else ''}")
+        check_setup()                                       # before any ticket is fetched or touched
+        print("model setup ok")
 
         tickets = [hd.get_ticket(args.ticket)] if args.ticket else list(hd.open_tickets())
         tickets = [t for t in tickets if not t.get("handled")][: args.limit]
@@ -189,6 +191,10 @@ def main(argv=None):
         print(f"stopped: the model API rejected our setup ({e}). Check ANTHROPIC_API_KEY and the model "
               f"settings, then run again.", file=sys.stderr)
         return 2
+    except ModelFailed as e:                                # only the start-up check gets here
+        print(f"stopped: the model API is unavailable ({e}). No ticket was touched; run again later.",
+              file=sys.stderr)
+        return 1
     finally:
         log.close()
         hd.close()

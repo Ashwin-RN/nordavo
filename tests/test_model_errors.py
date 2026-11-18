@@ -55,11 +55,40 @@ def test_check_call_error_is_a_model_failure(monkeypatch, error):
         checks.check_reply(DECISION, f"{TICKET['subject']}\n{TICKET['body']}")
 
 
-def test_setup_error_mid_run_stops_with_nothing_posted(monkeypatch, tmp_path):
+# ---- the runner: the start-up call and a setup error mid-run
+
+def runner(monkeypatch, tmp_path, client):
+    """Point run.main at a fake helpdesk with two tickets and a fake model. Returns the helpdesk."""
     monkeypatch.chdir(tmp_path)  # the lock file and the log go here, not into the repo
     hd = FakeHelpdesk([TICKET, {**TICKET, "id": "T901"}])
     monkeypatch.setattr(run, "Helpdesk", lambda cfg: hd)
     monkeypatch.setattr(run, "load_config", lambda: None)
-    use(monkeypatch, FakeClient(parse=[status_error(anthropic.AuthenticationError, 401)]))
+    use(monkeypatch, client)
+    return hd
+
+
+def test_bad_key_stops_at_start_up(monkeypatch, tmp_path):
+    client = FakeClient(create=[status_error(anthropic.AuthenticationError, 401)])  # no triage call allowed
+    hd = runner(monkeypatch, tmp_path, client)
+    assert run.main([]) == 2
+    assert hd.posts == [] and client.calls == [("create", decide.MODEL)]
+
+
+def test_model_down_at_start_up_means_run_again(monkeypatch, tmp_path):
+    hd = runner(monkeypatch, tmp_path, FakeClient(create=[status_error(anthropic.OverloadedError, 529)]))
+    assert run.main([]) == 1
+    assert hd.posts == []
+
+
+def test_start_up_checks_each_model_once(monkeypatch, tmp_path):
+    monkeypatch.setattr(decide, "CHECK_MODEL", "some-other-model")
+    client = FakeClient(create=["ok", "ok"])
+    runner(monkeypatch, tmp_path, client)
+    decide.check_setup()
+    assert client.calls == [("create", decide.MODEL), ("create", "some-other-model")]
+
+
+def test_setup_error_mid_run_stops_with_nothing_posted(monkeypatch, tmp_path):
+    hd = runner(monkeypatch, tmp_path, FakeClient(create=["ok"], parse=[status_error(anthropic.AuthenticationError, 401)]))
     assert run.main([]) == 2
     assert hd.posts == []  # no fallback handoff, nothing sent
