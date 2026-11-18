@@ -3,7 +3,7 @@ import os
 
 import pytest
 
-from agent import config, run
+from agent import config, lock, run
 
 ALL = {"HELPDESK_URL": "https://fake.test", "HELPDESK_KEY": "k", "CANDIDATE_EMAIL": "me@example.com",
        "ANTHROPIC_API_KEY": "fake-key"}
@@ -11,8 +11,7 @@ ALL = {"HELPDESK_URL": "https://fake.test", "HELPDESK_KEY": "k", "CANDIDATE_EMAI
 
 @pytest.fixture
 def env(monkeypatch):
-    monkeypatch.setattr(config, "load_dotenv", lambda: None)  # never read the real .env
-    for name, value in ALL.items():
+    for name, value in ALL.items():  # set every variable here, so the real .env never decides a test
         monkeypatch.setenv(name, value)
     return monkeypatch
 
@@ -43,4 +42,4 @@ def test_missing_config_leaves_no_lock(env, tmp_path):
     env.setattr(run, "Helpdesk", lambda cfg: pytest.fail("reached the helpdesk"))
     with pytest.raises(SystemExit):
         run.main([])
-    assert not os.path.exists(run.LOCK)
+    assert not os.path.exists(lock.LOCK)

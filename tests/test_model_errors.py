@@ -4,19 +4,13 @@ import anthropic
 import pytest
 
 from agent import checks, decide, run
-from tests.fakes import FakeClient, FakeHelpdesk, connection_error, parsed, status_error, timeout_error
-
-TICKET = {"id": "T900", "channel": "email", "customer_plan": "Basis", "subject": "Dienst ruilen",
-          "body": "Hoe ruil ik een dienst met een collega?"}  # invented
+from tests.fakes import (TICKET, FakeClient, connection_error, parsed, runner, status_error, timeout_error,
+                         use)
 
 # A draft that passes every code check, so check_reply goes on to the model checks.
 DECISION = {"language": "nl", "faq_ids": ["F04"], "draft_english": "You can swap a shift ...",
             "draft_reply": "Je kunt een dienst ruilen door de dienst in de app te openen en op \"Ruil aanbieden\" "
                            "te tikken. De manager keurt het goed onder Rooster → Verzoeken. Team Roosterly"}
-
-
-def use(monkeypatch, client):
-    monkeypatch.setattr(decide, "_client", client)
 
 
 SETUP = [(anthropic.BadRequestError, 400), (anthropic.AuthenticationError, 401),
@@ -56,16 +50,6 @@ def test_check_call_error_is_a_model_failure(monkeypatch, error):
 
 
 # ---- the runner: the start-up call and a setup error mid-run
-
-def runner(monkeypatch, tmp_path, client, tickets=None):
-    """Point run.main at a fake helpdesk and a fake model. Returns the helpdesk."""
-    monkeypatch.chdir(tmp_path)  # the lock file and the log go here, not into the repo
-    hd = FakeHelpdesk(tickets or [TICKET, {**TICKET, "id": "T901"}])
-    monkeypatch.setattr(run, "Helpdesk", lambda cfg: hd)
-    monkeypatch.setattr(run, "load_config", lambda: None)
-    use(monkeypatch, client)
-    return hd
-
 
 def test_bad_key_stops_at_start_up(monkeypatch, tmp_path):
     client = FakeClient(create=[status_error(anthropic.AuthenticationError, 401)])  # no triage call allowed

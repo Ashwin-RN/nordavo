@@ -19,8 +19,7 @@ from agent.config import Config
 
 ACTIONS = ("reply", "handoff", "close")
 COMMON_FIELDS = ("language", "category", "priority", "reason", "confidence")
-ACTION_FIELDS = {"reply": ("draft_reply",), "handoff": ("handoff_note",), "close": ()}
-REQUIRED_FIELDS = {"reply": ("draft_reply",), "handoff": ("handoff_note",), "close": ()}
+ACTION_FIELDS = {"reply": ("draft_reply",), "handoff": ("handoff_note",), "close": ()}  # sent, and required
 
 
 class HelpdeskError(Exception):
@@ -135,7 +134,7 @@ class Helpdesk:
         if action not in ACTIONS:
             raise ValueError(f"unknown action {action!r}")
         body = {k: decision[k] for k in COMMON_FIELDS + ACTION_FIELDS[action] if decision.get(k) is not None}
-        missing = [k for k in ("language", "category", "priority", "reason") + REQUIRED_FIELDS[action] if not body.get(k)]
+        missing = [k for k in ("language", "category", "priority", "reason") + ACTION_FIELDS[action] if not body.get(k)]
         if missing:
             raise ValueError(f"{ticket_id}: missing {missing} for {action}")
 

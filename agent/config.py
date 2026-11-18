@@ -1,8 +1,13 @@
-"""Settings come from environment variables (or a local .env). Nothing secret lives in the code."""
+"""Settings come from environment variables (or a local .env). Nothing secret lives in the code.
+
+Importing this module loads .env once; a variable already set in the environment wins over .env.
+"""
 import os
 from dataclasses import dataclass
 
 from dotenv import load_dotenv
+
+load_dotenv()
 
 REQUIRED = ("HELPDESK_URL", "HELPDESK_KEY", "CANDIDATE_EMAIL", "ANTHROPIC_API_KEY")
 
@@ -20,7 +25,6 @@ def setting(name, default):
 
 
 def load_config() -> Config:
-    load_dotenv()
     missing = [name for name in REQUIRED if not os.environ.get(name)]
     if missing:
         raise SystemExit(f"Missing environment variables: {', '.join(missing)}. Copy .env.example to .env and fill it in.")

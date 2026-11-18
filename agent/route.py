@@ -9,24 +9,13 @@ First match wins:
   6. model confidence below MIN_REPLY_CONFIDENCE          -> handoff
   7. otherwise                            -> reply candidate (checks.py checks it before it is sent)
 """
-import re
-
 from agent.config import setting
+from agent.decide import FAQ_IDS
 from agent.rules import priority_floor
 
 # Below this self-reported confidence a reply goes to a human instead. The model's confidence is a
 # weak signal on its own, so it is one gate among several, not the main one.
 MIN_REPLY_CONFIDENCE = float(setting("MIN_REPLY_CONFIDENCE", "0.7"))
-
-KNOWN_FAQ_IDS = None  # filled on first use from faq.md headings
-
-
-def _known_faq_ids():
-    global KNOWN_FAQ_IDS
-    if KNOWN_FAQ_IDS is None:
-        from agent.decide import FAQ_TEXT
-        KNOWN_FAQ_IDS = set(re.findall(r"^## (F\d\d)\b", FAQ_TEXT, re.MULTILINE))
-    return KNOWN_FAQ_IDS
 
 
 RULE_TEXT = {
@@ -74,7 +63,7 @@ def route(proposal, code_flags):
                           f"a language we do not reply in."}
 
     faq_ids = [f.upper() for f in proposal.faq_ids]
-    unknown = [f for f in faq_ids if f not in _known_faq_ids()]
+    unknown = [f for f in faq_ids if f not in FAQ_IDS]
     if not faq_ids or unknown or not proposal.fully_covered or not proposal.draft_reply.strip():
         why = "the FAQ does not fully answer it" if not unknown else f"cited unknown FAQ ids {unknown}"
         return {**base, "action": "handoff", "route_reason": "not_covered",

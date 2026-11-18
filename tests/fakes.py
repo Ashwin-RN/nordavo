@@ -82,3 +82,26 @@ class FakeHelpdesk:
 
     def close(self):
         pass
+
+
+# ---- shared test setup
+
+TICKET = {"id": "T900", "channel": "email", "customer_plan": "Basis", "subject": "Dienst ruilen",
+          "body": "Hoe ruil ik een dienst met een collega?"}  # invented
+
+
+def use(monkeypatch, client):
+    """Replace decide.py's Anthropic client with a fake for this test."""
+    from agent import decide
+    monkeypatch.setattr(decide, "_client", client)
+
+
+def runner(monkeypatch, tmp_path, client, tickets=None):
+    """Point run.main at a fake helpdesk and a fake model. Returns the helpdesk."""
+    from agent import run
+    monkeypatch.chdir(tmp_path)  # the lock file and the log go here, not into the repo
+    hd = FakeHelpdesk(tickets or [TICKET, {**TICKET, "id": "T901"}])
+    monkeypatch.setattr(run, "Helpdesk", lambda cfg: hd)
+    monkeypatch.setattr(run, "load_config", lambda: None)
+    use(monkeypatch, client)
+    return hd

@@ -157,10 +157,6 @@ def mask(text):
 PAYMENT_KINDS = {"card", "long_number", "iban", "iban_like", "cvc"}
 
 
-def has_payment_details(text):
-    return bool(mask(text)[1] & PAYMENT_KINDS)
-
-
 def screen(ticket):
     """Every code-only step before the model, in one place: used by the normal path and the fallback.
     Returns (masked subject, masked body, flags): keyword rules, plus "payment_details" if any were masked."""

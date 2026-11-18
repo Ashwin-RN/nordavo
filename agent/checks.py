@@ -81,13 +81,8 @@ def bad_urls(draft):
 
 
 def _numbers(text):
-    out = set()
-    for n in re.findall(r"\d+(?:[.,]\d+)?", text):
-        try:
-            out.add(float(n.replace(",", ".")))
-        except ValueError:
-            pass
-    return out
+    """Every number in the text, as a float (Dutch decimal commas included: 4,50 -> 4.5)."""
+    return {float(n.replace(",", ".")) for n in re.findall(r"\d+(?:[.,]\d+)?", text)}
 
 
 _FAQ_NUMBERS = _numbers(FAQ)
@@ -199,12 +194,12 @@ def failed_names(results):
     return None if results is None else sorted(name for name, problems in results.items() if problems)
 
 
-def check_reply(decision, ticket_text, plan, run_model_checks=True):
+def check_reply(decision, ticket_text, plan):
     """Return (passed, results, usages). results holds each check's problems: for the screen, never the log.
     plan (the ticket's customer_plan, or "unknown") goes to the judge only; the code checks never see it."""
     results = code_checks(decision["draft_reply"], decision["language"], ticket_text)
     usages = []
-    if not any(results.values()) and run_model_checks:
+    if not any(results.values()):                    # the two model calls only for drafts the code checks pass
         problems, usages = model_checks(decision["draft_reply"], decision.get("draft_english", ""),
                                         decision["faq_ids"], ticket_text, plan)
         results["model"] = problems

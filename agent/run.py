@@ -10,7 +10,6 @@ model, malformed request) and the run stopped.
 import argparse
 import hashlib
 import json
-import os
 import sys
 import time
 
@@ -19,11 +18,11 @@ from agent.checks import check_reply, detect_language, failed_names
 from agent.config import load_config
 from agent.decide import ModelFailed, ModelSetupError, check_setup, propose
 from agent.helpdesk import AlreadyHandled, Helpdesk, HelpdeskError, Unavailable
+from agent.lock import release_lock, take_lock
 from agent.route import empty_decision, route, rule_note, rule_text
 from agent.rules import is_empty, priority_floor, screen
 from agent.runlog import RunLog
 
-LOCK = ".run.lock"
 MODEL_FAILURE_LIMIT = 3   # model failures in a row before the run stops (the model is down, not one ticket)
 
 
@@ -121,44 +120,6 @@ def model_down(error, left_open):
     return 1
 
 
-def _pid_alive(pid):
-    if os.name == "nt":
-        import ctypes
-        k32 = ctypes.windll.kernel32
-        handle = k32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
-        if not handle:
-            return False
-        code = ctypes.c_ulong()
-        k32.GetExitCodeProcess(handle, ctypes.byref(code))
-        k32.CloseHandle(handle)
-        return code.value == 259  # STILL_ACTIVE
-    try:
-        os.kill(pid, 0)
-        return True
-    except OSError:
-        return False
-
-
-def take_lock():
-    """One run at a time. A lock left by a crashed run (its process is gone) is taken over."""
-    for _ in range(2):
-        try:
-            fd = os.open(LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-            os.write(fd, str(os.getpid()).encode())
-            os.close(fd)
-            return
-        except FileExistsError:
-            try:
-                pid = int(open(LOCK).read().strip() or 0)
-            except (OSError, ValueError):
-                pid = 0
-            if pid and _pid_alive(pid):
-                sys.exit(f"Another run (pid {pid}) is active. Wait for it to finish.")
-            print(f"Taking over a lock left by a crashed run (pid {pid}).")
-            os.remove(LOCK)
-    sys.exit(f"Could not take {LOCK}.")
-
-
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Roosterly support ticket agent")
     ap.add_argument("--dry-run", action="store_true", help="decide and log, but post nothing")
@@ -187,7 +148,7 @@ def main(argv=None):
             try:
                 outcome = handle(hd, log, t, args.dry_run, verbose=args.show)
             except ModelFailed as e:
-                failed.append((t, str(e)))
+                failed.append(t)
                 streak += 1
                 print(f"{t['id']}: model failed ({e}); will retry once at the end")
                 if streak >= MODEL_FAILURE_LIMIT:
@@ -198,7 +159,7 @@ def main(argv=None):
                 streak = 0
             print(f"{t['id']}: {outcome}")
 
-        for t, first_error in failed:                       # pass 2
+        for t in failed:                                    # pass 2
             try:
                 outcome = handle(hd, log, t, args.dry_run, verbose=args.show)
                 streak = 0
@@ -233,7 +194,7 @@ def main(argv=None):
     finally:
         log.close()
         hd.close()
-        os.remove(LOCK)
+        release_lock()
 
 
 if __name__ == "__main__":

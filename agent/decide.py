@@ -3,20 +3,19 @@
 The model sees the masked ticket, the FAQ and the client's rules. It returns one structured
 object (Proposal). It never posts anything itself and has no tools.
 """
+import re
 import time
 from pathlib import Path
 from typing import List, Literal
 
 import anthropic
-from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ValidationError
 
-from agent.config import setting
-
-load_dotenv()
+from agent.config import setting  # importing config loads .env
 
 FAQ_PATH = Path(__file__).resolve().parent.parent / "candidate_pack" / "faq.md"
 FAQ_TEXT = FAQ_PATH.read_text(encoding="utf-8")
+FAQ_IDS = set(re.findall(r"^## (F\d\d)\b", FAQ_TEXT, re.MULTILINE))  # F01 ... F12, from the headings
 
 MODEL = setting("TRIAGE_MODEL", "claude-haiku-5-5")
 EFFORT = setting("TRIAGE_EFFORT", "medium")

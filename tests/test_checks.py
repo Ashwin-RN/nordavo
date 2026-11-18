@@ -3,8 +3,7 @@ import pytest
 
 from agent import checks, decide, run
 from agent.checks import code_checks
-from tests.fakes import FakeClient, parsed, text_reply
-from tests.test_model_errors import TICKET, runner
+from tests.fakes import TICKET, FakeClient, parsed, runner, text_reply
 
 CASES = [
     # (name, draft, customer language, ticket text, failing check or None)

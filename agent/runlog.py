@@ -25,7 +25,8 @@ class RunLog:
         stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         self.path = Path(directory) / f"run-{stamp}.jsonl"
         self.fixed = fixed
-        self._f = open(self.path, "a", encoding="utf-8")
+        self.lines = 0
+        self._f = open(self.path, "a", encoding="utf-8")  # opened now, so a log that can't be written fails before any post
 
     def write(self, **fields):
         fields = {**self.fixed, **fields}
@@ -36,6 +37,10 @@ class RunLog:
         self._f.write(json.dumps(line, ensure_ascii=False) + "\n")
         self._f.flush()
         os.fsync(self._f.fileno())
+        self.lines += 1
 
     def close(self):
+        """Close the file; a run that stopped before its first ticket leaves no empty file in logs/."""
         self._f.close()
+        if not self.lines:
+            self.path.unlink()

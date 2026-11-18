@@ -3,8 +3,7 @@ import json
 from pathlib import Path
 
 from agent import decide, run
-from tests.fakes import FakeClient, parsed
-from tests.test_model_errors import TICKET, runner
+from tests.fakes import TICKET, FakeClient, parsed, runner
 
 CARD_DRAFT = decide.Proposal(
     language="nl", category="billing", priority="P3", priority_reason="Card question.", rule_flags=[],
@@ -62,3 +61,11 @@ def test_an_unknown_fixed_field_stops_before_any_line(tmp_path):
     from agent.runlog import RunLog
     with pytest.raises(ValueError):
         RunLog(tmp_path, ticket_text="never")
+
+
+def test_a_run_that_logs_nothing_leaves_no_file(tmp_path):
+    from agent.runlog import RunLog
+    empty, used = RunLog(tmp_path / "a"), RunLog(tmp_path / "b")
+    used.write(ticket_id="T900")
+    empty.close(), used.close()
+    assert not empty.path.exists() and used.path.exists()
