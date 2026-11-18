@@ -162,6 +162,19 @@ def test_show_leaves_the_judges_notes_to_the_translations_file(monkeypatch, tmp_
     assert "SENTINEL" not in capsys.readouterr().out
 
 
+def test_blind_reader_shows_the_draft_and_nothing_the_judge_compared(tmp_path, capsys):
+    from eval import blind
+    entry = {"id": "E99", "language": "nl", "draft_reply": "Hoi, DRAFT.", "draft_english": "DRAFTER-ENGLISH",
+             "back_translation": "BACK", "judge_failed": [], "judge_notes": ["NOTE"]}
+    for i in (1, 2):
+        (tmp_path / f"translations-20261119T000000Z-r{i}-abc1234.json").write_text(
+            json.dumps({"entries": [entry]}), encoding="utf-8")
+    blind.main(sorted(str(p) for p in tmp_path.glob("translations-*.json")))
+    out = capsys.readouterr().out
+    assert "Hoi, DRAFT." in out and "r1,r2" in out and out.count("Hoi, DRAFT.") == 1
+    assert not any(s in out for s in ("DRAFTER-ENGLISH", "BACK", "NOTE"))
+
+
 def test_no_translation_entry_without_a_back_translation(monkeypatch, tmp_path):
     code, _ = eval_main(monkeypatch, tmp_path, FakeClient(parse=[parsed(HANDOFF)]))
     (path,) = tmp_path.glob("translations-*.json")
