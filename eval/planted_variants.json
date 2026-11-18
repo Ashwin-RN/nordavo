@@ -1,0 +1,158 @@
+{
+ "source": "translations-20261118T185535Z-r1-3cc0210.json",
+ "about": "Planted meaning errors in honest Dutch drafts (r1 after the fix, all passed the judge). Each planted version changes the Dutch only, with one edit; the drafter's honest English stays as it was, which is the case a reader without Dutch cannot see. 'pattern' is the English a faithful back-translation of the planted version must contain, written before any run. Caught = held back by any check. Written by Claude Opus 5.5, not a native speaker.",
+ "examples": [
+  {
+   "example": "E02",
+   "faq_ids": [
+    "F06"
+   ],
+   "dutch": "Beste, U kunt uw nieuwe btw-nummer zelf aanpassen onder Instellingen → Bedrijfsgegevens. Het nieuwe nummer wordt dan gebruikt op toekomstige facturen. Met vriendelijke groet, Team Roosterly",
+   "english": "Hello, you can change your new VAT number yourself under Settings → Company details (Instellingen → Bedrijfsgegevens). The new number is then used on future invoices. Kind regards, Team Roosterly.",
+   "planted": [
+    {
+     "id": "E02-negation",
+     "kind": "negation",
+     "old": "U kunt uw nieuwe btw-nummer zelf aanpassen",
+     "new": "U kunt uw nieuwe btw-nummer niet zelf aanpassen",
+     "pattern": "\\b(cannot|can ?not|can't|not able|unable|not possible)\\b"
+    },
+    {
+     "id": "E02-time",
+     "kind": "time",
+     "old": "toekomstige facturen",
+     "new": "eerdere facturen",
+     "pattern": "\\b(previous|past|earlier|prior|old|existing)\\b invoices?"
+    },
+    {
+     "id": "E02-actor",
+     "kind": "actor",
+     "old": "U kunt uw nieuwe btw-nummer zelf aanpassen",
+     "new": "Onze klantenservice past uw nieuwe btw-nummer aan",
+     "pattern": "customer (service|support)|support team|helpdesk|service desk"
+    },
+    {
+     "id": "E02-place",
+     "kind": "place",
+     "old": "Instellingen → Bedrijfsgegevens",
+     "new": "Instellingen → Abonnement",
+     "pattern": "Abonnement|Subscription"
+    }
+   ]
+  },
+  {
+   "example": "E04",
+   "faq_ids": [
+    "F03"
+   ],
+   "dutch": "Hoi, een dienst ruil je via de app: open de dienst en tik op \"Ruil aanbieden\". Een collega met dezelfde functie kan de ruil dan accepteren. Daarna keurt je manager de ruil goed onder Rooster → Verzoeken. Team Roosterly",
+   "english": "Hi, you swap a shift in the app: open the shift and tap \"Offer swap\" (Ruil aanbieden). A colleague with the same role can then accept the swap. After that, your manager approves the swap under Rota → Requests (Rooster → Verzoeken). Team Roosterly",
+   "planted": [
+    {
+     "id": "E04-negation",
+     "kind": "negation",
+     "old": "kan de ruil dan accepteren",
+     "new": "kan de ruil dan niet accepteren",
+     "pattern": "\\b(cannot|can ?not|can't|not able|unable|not possible)\\b"
+    },
+    {
+     "id": "E04-wrong_fact",
+     "kind": "wrong_fact",
+     "old": "met dezelfde functie",
+     "new": "met een andere functie",
+     "pattern": "\\b(different|another|other)\\b (role|function|position|job)"
+    },
+    {
+     "id": "E04-actor",
+     "kind": "actor",
+     "old": "keurt je manager de ruil goed",
+     "new": "keurt je collega de ruil goed",
+     "pattern": "colleague[^.]{0,40}approv|approv[^.]{0,40}colleague"
+    },
+    {
+     "id": "E04-place",
+     "kind": "place",
+     "old": "Rooster → Verzoeken",
+     "new": "Instellingen → Bedrijfsgegevens",
+     "pattern": "Bedrijfsgegevens|Company (details|information|data)"
+    }
+   ]
+  },
+  {
+   "example": "E07",
+   "faq_ids": [
+    "F05"
+   ],
+   "dutch": "Hallo, Plus kost €6 per actieve medewerker per maand, dus voor 25 medewerkers komt dat neer op €150 per maand (excl. btw). U kunt upgraden via Instellingen → Abonnement; de nieuwe prijs geldt vanaf de volgende factuur. Team Roosterly",
+   "english": "Hello, Plus costs €6 per active employee per month, so for 25 employees that comes to €150 per month (excl. VAT). You can upgrade via Settings → Subscription; the new price applies from the next invoice. Team Roosterly",
+   "planted": [
+    {
+     "id": "E07-negation",
+     "kind": "negation",
+     "old": "U kunt upgraden",
+     "new": "U kunt niet upgraden",
+     "pattern": "\\b(cannot|can ?not|can't|not able|unable|not possible)\\b"
+    },
+    {
+     "id": "E07-wrong_fact",
+     "kind": "wrong_fact",
+     "old": "per actieve medewerker",
+     "new": "per vestiging",
+     "pattern": "per (location|branch|site|establishment|office)"
+    },
+    {
+     "id": "E07-time",
+     "kind": "time",
+     "old": "vanaf de volgende factuur",
+     "new": "vanaf de vorige factuur",
+     "pattern": "\\b(previous|last|prior|past|earlier)\\b invoice"
+    },
+    {
+     "id": "E07-number",
+     "kind": "number",
+     "old": "€150",
+     "new": "€175",
+     "pattern": "175"
+    }
+   ]
+  },
+  {
+   "example": "E10",
+   "faq_ids": [
+    "F11"
+   ],
+   "dutch": "Hoi, actuele storingen en gepland onderhoud vind je op status.roosterly.nl. Daar zie je meteen of er vanavond iets gepland staat.\n\nTeam Roosterly",
+   "english": "Hi, current outages and planned maintenance can be found at status.roosterly.nl. There you can see right away whether anything is planned for tonight.\n\nTeam Roosterly",
+   "planted": [
+    {
+     "id": "E10-negation",
+     "kind": "negation",
+     "old": "Daar zie je meteen of",
+     "new": "Daar zie je niet of",
+     "pattern": "\\b(not|cannot|can't|won't|don't)\\b"
+    },
+    {
+     "id": "E10-wrong_fact",
+     "kind": "wrong_fact",
+     "old": "of er vanavond iets gepland staat",
+     "new": "dat er vanavond niets gepland staat",
+     "pattern": "nothing (is )?(planned|scheduled)|no (maintenance|work)[^.]{0,20}(planned|scheduled)|not (anything|any maintenance)[^.]{0,10}planned"
+    },
+    {
+     "id": "E10-time",
+     "kind": "time",
+     "old": "actuele storingen",
+     "new": "eerdere storingen",
+     "pattern": "\\b(past|previous|earlier|prior|former)\\b (outages?|disruptions?|failures?|incidents?)"
+    },
+    {
+     "id": "E10-actor",
+     "kind": "actor",
+     "old": "Daar zie je meteen",
+     "new": "We mailen je meteen",
+     "pattern": "\\be-?mail"
+    }
+   ]
+  }
+ ]
+}
