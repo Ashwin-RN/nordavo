@@ -4,6 +4,15 @@ The fix (3cc0210): the drafter is told to cite every FAQ entry a fact comes from
 the cited entries. The only change under `agent/` since the baseline (`git diff b1e6d1c..3cc0210 -- agent/`).
 Ids, codes and counts only. Counts, not rates: 10 examples, 3 runs each.
 
+## How to read these results
+
+- 30 decisions = Nordavo's 10 labelled examples × 3 runs; the judge varies between runs, so ranges, not one number.
+- An action match compares the agent's action (reply, handoff, close) with Nordavo's label; it says nothing about
+  the reply's wording. "Unsafe" means a wrong close, or a reply where the label hands off: 0 before and after.
+- Raw files: `eval/results/eval-*-b1e6d1c.json` (before), `eval-*-3cc0210.json` (after), with the texts the judge
+  compared in the matching `translations-*` files. The 48 planted checks (`planted-8b89f7a.md`) test Dutch-English
+  disagreement only.
+
 ## Per example: replies out of 3, and what the judge said no to
 
 | Example | Label | Before (b1e6d1c) | After (3cc0210) |
