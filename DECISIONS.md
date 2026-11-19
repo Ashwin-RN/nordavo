@@ -3,6 +3,17 @@
 Plain-English record of what was chosen, why, and what it costs. Updated as the work goes.
 The README's "Decisions" and "What I would improve" sections are written from this file.
 
+More commands, beyond the README's:
+
+```
+python -m pytest -q                  # 223 tests, no network, no keys
+python -m agent.run --dry-run        # decide every open ticket, post nothing
+python -m eval.planted --runs 3      # planted Dutch errors against the reply checks (model calls, posts nothing)
+python -m eval.summary eval/results/eval-*-3cc0210.json   # totals and ranges of saved eval runs
+```
+
+Exit codes: 0 done, 1 run again (tickets still open, or the helpdesk was unavailable), 2 fix the setup first.
+
 ## The ground
 
 | Decision | Why | What it costs |
@@ -21,7 +32,7 @@ The API reference says what each error means. These are the choices it leaves op
 
 | Decision | Why | What it costs |
 |---|---|---|
-| Try a 503 up to 6 times in all (5 retries), the wait doubling up to 8 seconds, with a little random jitter | Rides out a short outage without hanging | About 15 seconds per ticket in a long outage (a circuit breaker is the next step) |
+| Try a 503 up to 6 times in all (5 retries; seen live once, T019 in the final run, saved on retry), the wait doubling up to 8 seconds, with a little random jitter | Rides out a short outage without hanging | About 15 seconds per ticket in a long outage (a circuit breaker is the next step) |
 | At most 4 calls a second, under the limit of 5 | A margin means we almost never see a 429 | Slightly slower runs |
 | On a timeout, look the ticket up before sending again | A timeout means "maybe saved"; resending blind could cause a 409 | One extra call, only after a timeout |
 | The helpdesk's open list is the only record of what is done | A local list can drift: a crash between the helpdesk saving and our list updating would cause a resend | 3 calls to list the tickets each run |

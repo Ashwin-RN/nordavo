@@ -53,8 +53,8 @@ Ids, codes and counts only. Counts, not rates: 10 examples, 3 runs each.
 | Drafts for reply-labelled tickets held by the judge | 10 of 18 | 4 of 17 (one stopped by code first) |
 | Cost per 100 tickets | 0.0865-0.0901 USD | 0.0796-0.0898 USD |
 
-A one-line fix aimed at E07 can move "all four" by at most one per run. The rest of the gain (E04, E05, E10) is
-the judge's noise on other examples, not the fix.
+E07 accounts for 1 of the 7 extra all-four matches and 2 of the 5 extra replies. The other changes (E04, E05, E10)
+varied across runs; the eval does not isolate their cause, so they are not claimed for the fix.
 
 ## Cost per 100 tickets, the calculation
 
